@@ -131,6 +131,7 @@ main { flex: 1; }
 }
 .hint .icon { color: var(--gma-blue); flex: none; margin-top: 2px; }
 .hint strong { color: var(--gma-ink); display: block; }
+.error-detail { white-space: pre-wrap; word-break: break-word; font-size: 13px; background: var(--gma-bg); padding: 10px; border-radius: 2px; }
 
 .metric-card { display: flex; gap: 16px; align-items: center; }
 .metric-icon {

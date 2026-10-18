@@ -41,3 +41,14 @@ describe("Zentren & Standorte", () => {
     expect(screen.getByText(/noch keine freigegebenen Profilkennzahlen/)).toBeTruthy();
   });
 });
+
+describe("Fehleranzeige", () => {
+  it("zeigt statt einer weißen Seite eine Meldung", async () => {
+    const { ErrorBoundary } = await import("../components/layout/ErrorBoundary");
+    const Boom = () => { throw new Error("Testfehler"); };
+    const spy = console.error; console.error = () => {};
+    render(<ErrorBoundary><Boom /></ErrorBoundary>);
+    console.error = spy;
+    expect(screen.getByRole("alert").textContent).toContain("Testfehler");
+  });
+});

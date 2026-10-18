@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import type { MunicipalityConfig } from "./config/types";
 import { AppFooter } from "./components/layout/AppFooter";
 import { AppHeader } from "./components/layout/AppHeader";
+import { ErrorBoundary } from "./components/layout/ErrorBoundary";
 import { CentersPage } from "./pages/CentersPage";
 import { OverviewPage } from "./pages/OverviewPage";
 import { RetailStructurePage } from "./pages/RetailStructurePage";
@@ -22,6 +23,7 @@ export default function App({ config }: { config: MunicipalityConfig }) {
       </a>
       <AppHeader config={config} />
       <main id="inhalt" tabIndex={-1}>
+        <ErrorBoundary resetKey={pathname}>
         <Routes>
           <Route path="/" element={<OverviewPage config={config} />} />
           {m.zentren ? <Route path="/zentren" element={<CentersPage config={config} />} /> : null}
@@ -30,6 +32,7 @@ export default function App({ config }: { config: MunicipalityConfig }) {
           {m["einzelhandel-steuern"] ? <Route path="/einzelhandel-steuern" element={<SteeringPage config={config} />} /> : null}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </ErrorBoundary>
       </main>
       <AppFooter config={config} />
     </div>
