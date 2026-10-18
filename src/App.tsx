@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import type { MunicipalityConfig } from "./config/types";
 import { AppFooter } from "./components/layout/AppFooter";
 import { AppHeader } from "./components/layout/AppHeader";
@@ -10,9 +10,24 @@ import { RetailStructurePage } from "./pages/RetailStructurePage";
 import { SteeringPage } from "./pages/SteeringPage";
 import { SupplyPage } from "./pages/SupplyPage";
 
+/** Hält den Router bei jeder Hash-Änderung mit der Adresszeile synchron (falls ein Browser kein popstate meldet). */
+function useHashSync() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const sync = () => {
+      const target = window.location.hash.replace(/^#/, "") || "/";
+      if (!target.startsWith("/")) return; // z. B. "#inhalt" ist kein Seitenwechsel
+      navigate(target, { replace: true });
+    };
+    window.addEventListener("hashchange", sync);
+    return () => window.removeEventListener("hashchange", sync);
+  }, [navigate]);
+}
+
 export default function App({ config }: { config: MunicipalityConfig }) {
   const { pathname } = useLocation();
   useEffect(() => window.scrollTo(0, 0), [pathname]);
+  useHashSync();
   const m = config.modules;
 
   return (
