@@ -32,3 +32,8 @@ Solange `isDemo: true` gilt, zeigt die Seite den Hinweis „Prototyp mit Beispie
 | Struktur | `retail.minCount` | Schwelle für kleine Fallzahlen bestätigen (Standard 3) |
 | Struktur | Entwicklungstabelle (heute `src/demo/`) | Betriebe je Erhebungsjahr × Warengruppe × Standorttyp als Tabelle/Layer |
 | Struktur | Zuordnung Betrieb → Zentrum (heute `src/demo/`) | Attribut im öffentlichen Betriebslayer, z. B. `CENTER_ID` |
+| Nahversorgung | Hexagon-Attribute (heute `src/demo/`) | Je Rasterzelle: Einwohner, Entfernung zum nächsten Markt (m), Märkte im Fußweg – im öffentlichen Layer |
+| Nahversorgung | `supply.wellSuppliedClassIds` | Welche Klassen als „gut versorgt“ gelten (heute: sehr hoch, hoch) |
+| Nahversorgung | `supply.minPopulation` | Schwelle, unter der Einwohner je Zelle nicht ausgewiesen werden (Standard 10) |
+| Nahversorgung | Bezirkstabelle (heute `src/demo/`) | Anteil gut versorgter Einwohner je Stadtbezirk |
+| Nahversorgung | Adresssuche | ArcGIS-Geocoder (Dienst/Locator-URL) für die freie Adresssuche; heute nur Beispieladressen |

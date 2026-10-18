@@ -267,6 +267,8 @@ export const wiesbadenConfig: MunicipalityConfig = {
       { area: `${P}Östliche Siedlungsränder`, text: `${P}Nur kleinere Märkte unter 400 m²; Angebot eingeschränkt.` },
       { area: `${P}Neubauquartiere am Rhein`, text: `${P}Einwohnerzuwachs übersteigt das bestehende Angebot.` }
     ],
+    wellSuppliedClassIds: ["1", "2"],
+    minPopulation: 10,
     complementary: `${P}Bäckereien, Metzgereien, Hofläden und sieben Wochenmärkte ergänzen die Nahversorgung, sind im Index aber nicht berücksichtigt.`
   },
 

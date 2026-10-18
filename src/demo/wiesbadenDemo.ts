@@ -2,7 +2,7 @@
 // Ersetzen durch öffentliche ArcGIS-Daten, sobald WebMap-IDs vorliegen. Keine fachliche Aussage.
 import type { MunicipalityConfig } from "../config/types";
 import { distance, hexagon, pointInPolygon, seededRandom, type Pt } from "./geometry";
-import type { DemoData, DemoDevelopmentRow, DemoStore } from "./types";
+import type { DemoData, DemoDevelopmentRow, DemoHex, DemoStore } from "./types";
 
 const outline: Pt[] = [
   [120, 250], [150, 170], [220, 118], [300, 80], [380, 58], [455, 70], [525, 96], [592, 140], [640, 200],
@@ -114,16 +114,44 @@ export function buildWiesbadenDemo(config: MunicipalityConfig): DemoData {
 
   // Hexagon-Klassen sind hier nur simuliert; real liefert GMA fertige Indexwerte.
   const r = 13;
-  const hexes = [];
+  const hexes: DemoHex[] = [];
+  const M_PER_UNIT = 25; // Beispielkarte: 1 Karteneinheit ≈ 25 m
+  const WALK = 1000 / M_PER_UNIT;
   for (let row = 0; row * r * 1.5 < 480; row++) {
     for (let col = 0; col * r * Math.sqrt(3) < 760; col++) {
       const at: Pt = [60 + col * r * Math.sqrt(3) + (row % 2) * r * (Math.sqrt(3) / 2), 50 + row * r * 1.5];
       if (!pointInPolygon(at, outline)) continue;
-      const d = Math.min(...markets.map(m => distance(at, m.at))) * (0.85 + rand() * 0.3);
+      const nearest = Math.min(...markets.map(m => distance(at, m.at)));
+      const d = nearest * (0.85 + rand() * 0.3);
       const classId = rand() < 0.02 ? "0" : d < 28 ? "1" : d < 48 ? "2" : d < 72 ? "3" : d < 100 ? "4" : "5";
-      hexes.push({ id: `H${hexes.length + 1}`, classId, points: hexagon(at, r) });
+      // Einwohner: dichter nahe der Zentren, dünner am Rand (Demo)
+      const nearCenter = Math.min(...centers.map(c => distance(at, c.at)));
+      const pop = Math.max(0, Math.round((900 * Math.exp(-nearCenter / 70) + 40 + rand() * 120) / 5) * 5);
+      hexes.push({
+        id: `H${hexes.length + 1}`, classId, points: hexagon(at, r), pop,
+        nearestMarketM: Math.round((nearest * M_PER_UNIT * 1.3) / 10) * 10, // Fußweg ≈ Luftlinie × 1,3
+        marketsInWalk: markets.filter(m => distance(at, m.at) <= WALK).length,
+        district: districtOf(at)
+      });
     }
   }
+
+  const exampleAddresses = [
+    { label: "Marktplatz (Mitte)", at: [402, 252] as Pt },
+    { label: "Rathausstraße (Biebrich)", at: [372, 414] as Pt },
+    { label: "Wiesbadener Straße (Dotzheim)", at: [286, 270] as Pt },
+    { label: "Danziger Straße (Sonnenberg)", at: [470, 150] as Pt },
+    { label: "Am Hafen (Schierstein)", at: [252, 404] as Pt },
+    { label: "Nordwestlicher Stadtrand", at: [175, 215] as Pt },
+    { label: "Östlicher Siedlungsrand", at: [630, 250] as Pt }
+  ];
+
+  const districtSupply = districtAnchors.map(([district]) => {
+    const inD = hexes.filter(h => h.district === district);
+    const pop = inD.reduce((n, h) => n + h.pop, 0) || 1;
+    const good = inD.filter(h => h.classId === "1" || h.classId === "2").reduce((n, h) => n + h.pop, 0);
+    return { district, wellSuppliedPct: Math.round((good / pop) * 100) };
+  });
 
   // Entwicklung: 2025 = aktueller Bestand; frühere Jahre über feste Demo-Faktoren je Warengruppe.
   const pastFactor: Record<string, number> = {
@@ -150,6 +178,8 @@ export function buildWiesbadenDemo(config: MunicipalityConfig): DemoData {
     stores,
     markets,
     hexes,
-    developmentTable
+    developmentTable,
+    exampleAddresses,
+    districtSupply
   };
 }

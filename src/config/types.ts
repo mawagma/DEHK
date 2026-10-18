@@ -132,6 +132,10 @@ export type MunicipalityConfig = {
     gaps?: { area: string; text: string }[];
     /** Lebensmittelhandwerk, Wochenmärkte … */
     complementary?: string;
+    /** Versorgungsklassen, die als „hoch oder sehr hoch versorgt“ zählen (für die Kennzahl). */
+    wellSuppliedClassIds?: string[];
+    /** Einwohner je Zelle unter diesem Wert werden nicht ausgewiesen (Standard 10). */
+    minPopulation?: number;
   };
   retail: {
     intro: string; assortments: string[]; locationTypes: string[]; districts: string[]; note: string;

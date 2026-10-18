@@ -19,7 +19,20 @@ export type DemoStore = {
 export type DemoDevelopmentRow = { year: string; assortment: string; locationType: string; count: number };
 
 export type DemoMarket = { id: string; name: string; at: Pt; typeId: string };
-export type DemoHex = { id: string; classId: string; points: Pt[] };
+/** Rasterzelle mit fertigen Attributen (real: von GMA geliefert, die Seite rechnet sie nicht). */
+export type DemoHex = {
+  id: string; classId: string; points: Pt[];
+  /** Einwohner in der Zelle */
+  pop: number;
+  /** Fußweg-Distanz zum nächsten relevanten Lebensmittelmarkt in Metern */
+  nearestMarketM: number;
+  /** Anzahl relevanter Märkte in fußläufiger Entfernung */
+  marketsInWalk: number;
+  district: string;
+};
+export type DemoAddress = { label: string; at: Pt };
+/** Vorbereitete Tabelle: Anteil der Einwohner mit hohem/sehr hohem Versorgungsgrad je Ortsbezirk. */
+export type DemoDistrictSupply = { district: string; wellSuppliedPct: number };
 
 export type DemoData = {
   outline: Pt[];
@@ -29,4 +42,6 @@ export type DemoData = {
   markets: DemoMarket[];
   hexes: DemoHex[];
   developmentTable: DemoDevelopmentRow[];
+  exampleAddresses: DemoAddress[];
+  districtSupply: DemoDistrictSupply[];
 };

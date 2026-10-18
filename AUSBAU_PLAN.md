@@ -193,3 +193,15 @@ Ein Filterzustand bleibt die einzige Quelle für Karte, Kennzahlen und Diagramme
   - Schalter „Nur sichtbaren Kartenausschnitt auswerten“ für die Beispielkarte (`SchematicMap.onViewChange`).
 - **Offen:** Mit echter ArcGIS-WebMap fehlt noch: Filter als Layer-Abfrage/`definitionExpression`, Auswertung per Statistics Query und Kartenausschnitt über `view.extent` – die Seite nutzt dafür dieselbe Filterstruktur, die Umsetzung braucht echte Layer und Feldnamen.
 - **Wie testen:** `npm test` (49 Tests); im Browser z. B. `#/einzelhandelsstruktur?sortiment=Bekleidung%2C%20Schuhe&raum=Mitte`, Link „Betriebe in diesem Bereich ansehen“ im Zentrenprofil, „Wo gibt es das heute?“ in der Sortimentssuche.
+
+### Phase 4 – erledigt
+- **Geändert:**
+  - `src/demo/`: Hexagone tragen Einwohner (`pop`), Entfernung zum nächsten Markt (`nearestMarketM`), Märkte im Fußweg (`marketsInWalk`) und Bezirk; 7 Beispieladressen; vorbereitete Bezirkstabelle `districtSupply`.
+  - `src/lib/supply.ts`: Einwohner je Versorgungsklasse, Anteil gut versorgter Einwohner (`supply.wellSuppliedClassIds`), gerundete Einwohnerzahl mit Schwelle (`supply.minPopulation`, Standard 10), Rasterzelle an einem Punkt – mit Tests.
+  - Nahversorgung: Ringdiagramm „Anteil der Einwohner nach Versorgungsgrad“ statt Rasterzellen; Kennzahl „x % der Einwohner sind hoch oder sehr hoch versorgt“ (ausgeblendet ohne `wellSuppliedClassIds`).
+  - Hexagon-Auswahl zeigt Versorgungsgrad, Einwohner (gerundet), nächsten Markt in ca. x m und Märkte im Fußweg.
+  - Legende der Lebensmittelmärkte klickbar (Filter nach Markttyp, mit Anzahl je Typ, tastaturbedienbar).
+  - „Wie ist meine Adresse versorgt?“ (`AddressCheck`): Auswahl einer Beispieladresse → Marker in der Karte, Zoom, Ergebnis wie bei einer Hexagon-Auswahl.
+  - Balkendiagramm „Gut versorgte Einwohner nach Stadtbezirk“ aus der vorbereiteten Tabelle.
+- **Offen:** Freie Adresssuche über den ArcGIS-Geocoder (die Komponente nimmt dafür Treffer als `options` entgegen); Hexagon-Attribute und Bezirkstabelle aus echten Layern.
+- **Wie testen:** `npm test` (57 Tests); im Browser `#/nahversorgung`, Beispieladresse wählen, Markttyp in der Legende anklicken.

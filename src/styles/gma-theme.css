@@ -338,7 +338,7 @@ main { flex: 1; }
 }
 .filter-field { display: grid; gap: 6px; min-width: 0; }
 .filter-label, .search-field > span { font-size: 12px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-.filter-bar select, .search-field input, .multi-select summary {
+.filter-bar select, .address-check select, .search-field input, .multi-select summary {
   min-height: 46px; padding: 0 14px; border: 1px solid #d3dce3; border-radius: var(--r-sm); background: #fff;
   font-weight: 600; font-size: 15px; color: var(--ink); transition: border-color .15s, box-shadow .15s; width: 100%;
 }
@@ -594,3 +594,7 @@ main { flex: 1; }
   .center-profile { padding: 20px; }
   .profile-metrics { grid-template-columns: 1fr; }
 }
+.legend-button.has-symbol { grid-template-columns: 16px 1fr auto; }
+.kpi-sentence { margin: 0 0 8px; font-size: 15px; }
+.kpi-sentence strong { font-size: 28px; font-weight: 800; color: var(--blue); margin-right: 4px; }
+.address-check select { width: 100%; margin-bottom: 6px; }
