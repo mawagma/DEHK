@@ -32,7 +32,7 @@ export function SupplyPage({ config }: { config: MunicipalityConfig }) {
 
   return (
     <>
-      <PageIntro title="Nahversorgung" text={config.supply.intro} />
+      <PageIntro image={config.heroImage} title="Nahversorgung" text={config.supply.intro} />
       <section className="page">
 
       <div className="workspace">

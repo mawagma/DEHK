@@ -19,7 +19,7 @@ export function SteeringPage({ config }: { config: MunicipalityConfig }) {
 
   return (
     <>
-      <PageIntro title="Einzelhandel steuern" text={s.intro} />
+      <PageIntro image={config.heroImage} title="Einzelhandel steuern" text={s.intro} />
       <section className="page">
 
       <div className="steering-layout">

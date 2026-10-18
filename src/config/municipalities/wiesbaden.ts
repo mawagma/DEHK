@@ -11,6 +11,14 @@ export const wiesbadenConfig: MunicipalityConfig = {
   conceptStatus: "Konzeptfassung 2026",
   dataStatus: "Einzelhandelserhebung 2025",
   isDemo: true,
+  heroImage: {
+    src: "./images/wiesbaden-neroberg.webp",
+    focusX: "46%",
+    author: "Martin Kraft",
+    sourceUrl: "https://commons.wikimedia.org/wiki/File:MK_36878-82_Wiesbaden_vom_Neroberg.jpg",
+    license: "CC BY-SA 3.0",
+    licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/"
+  },
   modules: { zentren: true, nahversorgung: true, einzelhandelsstruktur: true, "einzelhandel-steuern": true },
 
   contact: {

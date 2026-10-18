@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import type { MunicipalityConfig } from "../../config/types";
+import { ImageCredit } from "../ui/ImageCredit";
 import { navItems } from "./navigation";
 
 export function AppFooter({ config }: { config: MunicipalityConfig }) {
@@ -25,7 +26,10 @@ export function AppFooter({ config }: { config: MunicipalityConfig }) {
           </ul>
         </div>
       </div>
-      <p className="footer-claim">GMA · Forschen. Beraten. Umsetzen.</p>
+      <p className="footer-claim">
+        GMA · Forschen. Beraten. Umsetzen.
+        {config.heroImage ? <> · <ImageCredit image={config.heroImage} /></> : null}
+      </p>
     </footer>
   );
 }

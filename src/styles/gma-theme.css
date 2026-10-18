@@ -87,10 +87,19 @@ main { flex: 1; }
 .app-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 .app-footer a { color: #fff; text-decoration: none; display: inline-block; padding: 4px 0; }
 .app-footer a:hover { text-decoration: underline; text-decoration-color: var(--gma-orange); text-decoration-thickness: 2px; }
+.footer-claim a { display: inline; padding: 0; }
+.footer-claim small { font-size: inherit; }
 .footer-claim { max-width: 1640px; margin: 32px auto 0 !important; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.15); color: #c3ccd2; font-size: 13px; }
 
 /* Seitenkopf: Schiefergrau mit blauer Schrägfläche (Signatur von gma.biz) */
-.page-hero { background: linear-gradient(120deg, #39444c, #2f383f); }
+.page-hero { position: relative; background: linear-gradient(120deg, #39444c, #2f383f); }
+.page-hero.has-image::before {
+  content: ""; position: absolute; inset: 0 0 0 45%;
+  background: linear-gradient(90deg, rgba(57,68,76,.55), rgba(57,68,76,.1) 40%), var(--hero-image) var(--hero-focus) center / cover no-repeat;
+}
+.page-hero-panel { position: relative; z-index: 1; }
+.image-credit { position: absolute; right: 8px; bottom: 6px; z-index: 1; font-size: 12px; color: #fff; background: rgba(0,0,0,.55); padding: 1px 6px; }
+.image-credit a { color: #fff; }
 .page-hero-panel {
   width: min(880px, 92%); padding: 36px calc(var(--slant) + 24px) 36px var(--gutter); background: var(--gma-blue); color: #fff;
   clip-path: polygon(0 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
@@ -140,6 +149,7 @@ main { flex: 1; }
   display: flex; flex-direction: column; justify-content: center; gap: 20px;
   clip-path: polygon(0 0, 100% 0, calc(100% - var(--slant) * 2) 100%, 0 100%);
 }
+.hero-panel { background-size: cover; background-position: 46% center; }
 .hero-panel .eyebrow { color: #d6e8f4; font-size: 13px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .hero-panel h1 { color: #fff; font-size: clamp(32px, 3.6vw, 52px); font-weight: 400; margin: 0; text-transform: uppercase; letter-spacing: .01em; line-height: 1.1; }
 .hero-panel p { margin: 0; color: #eef5fa; font-size: 18px; max-width: 520px; }
@@ -336,6 +346,8 @@ main { flex: 1; }
   .metric-grid { margin-top: 16px; }
   .footer-grid { grid-template-columns: 1fr; gap: 24px; }
   .page-hero-panel { width: 100%; clip-path: none; padding-right: var(--gutter); }
+  .page-hero.has-image::before { display: none; }
+  .page-hero .image-credit { display: none; }
   .main-nav a { font-size: 13px; }
   .page-intro { flex-direction: column; align-items: start; }
   .workspace, .workspace.is-profile, .workspace.is-balanced { display: flex; flex-direction: column; min-height: 0; }

@@ -22,7 +22,7 @@ export function OverviewPage({ config }: { config: MunicipalityConfig }) {
   return (
     <>
       <section className="hero">
-        <div className="hero-panel">
+        <div className="hero-panel" style={config.heroImage ? { backgroundImage: `linear-gradient(rgba(0, 104, 165, .9), rgba(0, 82, 127, .94)), url("${config.heroImage.src}")` } : undefined}>
           <span className="eyebrow">{config.municipality} · {config.conceptStatus}</span>
           <h1>{config.overview.headline}</h1>
           <p>{config.overview.intro}</p>
