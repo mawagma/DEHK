@@ -1,3 +1,4 @@
+import "@arcgis/core/assets/esri/themes/light/main.css";
 import { useEffect, useRef, useState } from "react";
 
 type Props = {
