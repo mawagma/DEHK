@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Weiterleitung …</title>
+<script>
+  // GitHub Pages liefert diese Datei für unbekannte Pfade. Die App nutzt #-Adressen,
+  // daher /DEHK/zentren?x=1 -> /DEHK/#/zentren?x=1 umschreiben.
+  // shortcut: nimmt bei *.github.io das erste Pfadsegment als Projektordner an; bei eigener Domain anpassen.
+  var l = window.location;
+  var parts = l.pathname.split("/").filter(Boolean);
+  var base = /\.github\.io$/.test(l.hostname) && parts.length ? "/" + parts.shift() + "/" : "/";
+  l.replace(base + "#/" + parts.join("/") + l.search);
+</script>
+</head>
+<body><p>Sie werden weitergeleitet. Falls nicht: <a href="./">zur Startseite</a>.</p></body>
+</html>

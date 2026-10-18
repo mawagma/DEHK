@@ -26,19 +26,17 @@ The frontend owns navigation, layout, state, profiles, filters, charts and edito
 All domain calculations are prepared upstream by GMA. The frontend visualizes finished data.
 
 ## Current scope
-Implemented:
-- `/` Overview
-- `/zentren` Centers & locations
-- 70/30 overview -> 30/70 center profile interaction
-- municipality config for Wiesbaden
-- ArcGIS WebMap loader + visual fallback
+Implemented (with schematic demo maps/data in `src/demo/` while WebMap IDs are placeholders):
+- `/` Overview, `/zentren`, `/nahversorgung`, `/einzelhandelsstruktur`, `/einzelhandel-steuern`
+- explicit config types (`src/config/types.ts`), Wiesbaden as instance
+- shared center selection (URL state) for map and list, zoom to selection, 70/30 -> 30/70
+- `ArcGISMap` with configurable hitTest selection, highlight and goTo
+- HashRouter; Vitest tests (`npm test`)
 
 Not yet implemented:
-- real map feature selection / map-list synchronization
-- Nahversorgung
-- Einzelhandelsstruktur
-- Einzelhandel steuern
-- production ArcGIS IDs
+- production ArcGIS IDs / layer IDs / field names
+- ArcGIS-backed filtering for retail structure and market/store clicks in real WebMaps
+- approved texts and figures
 
 ## UX constraints
 Keep the existing GMA visual direction:
@@ -47,6 +45,8 @@ Keep the existing GMA visual direction:
 - light background
 - calm, modern data-product appearance
 - no generic admin-dashboard redesign
+- styled after gma.biz: Nunito (self-hosted via @fontsource-variable/nunito, approved), GMA blue `#0068a5`, slate `#39444c`, orange `#f19433` for accent lines only, slanted blue panels, uppercase titles
+- image rights for all images on gma.biz are cleared and may be used (not used yet)
 
 Centers page:
 - overview: ~70% map / 30% list
@@ -75,6 +75,10 @@ When implementing feature selection:
 
 If actual IDs/field names are unknown, make them configurable. Never invent production IDs.
 
+## Deployment (GitHub Pages)
+The built site lives in `docs/` and is served by GitHub Pages from `main` / `/docs` (no build on GitHub).
+After every code change run `npm run build:pages` and commit `docs/` together with the source change. Never edit `docs/` by hand.
+
 ## Engineering
 - First run install/build and inspect actual errors.
 - Make minimal, reusable changes.
@@ -86,14 +90,10 @@ If actual IDs/field names are unknown, make them configurable. Never invent prod
 - Run build/tests after changes.
 
 ## Next priority
-1. Stabilize current V1 build.
-2. Refactor municipality config to explicit types.
-3. Add map center selection and map/list sync.
-4. Add zoom-to-center from list.
-5. Then implement:
-   - Nahversorgung
-   - Einzelhandelsstruktur
-   - Einzelhandel steuern
+1. Connect real public WebMaps once IDs and field names are delivered.
+2. Replace demo data with ArcGIS queries (retail filter via definitionExpression / statistics queries).
+3. Editorial/data approval of all Wiesbaden content.
+4. Hosting / deployment.
 
 ## Reporting after work
 Summarize:

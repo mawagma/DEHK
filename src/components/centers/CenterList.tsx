@@ -1,32 +1,42 @@
-import type { Center } from "../../config/municipalities/wiesbaden";
+import type { MunicipalityConfig } from "../../config/types";
+import { LegendSymbol } from "../maps/SchematicMap";
 
 type Props = {
-  centers: readonly Center[];
-  selectedId?: string;
-  onSelect: (center: Center) => void;
+  config: MunicipalityConfig;
+  selectedId?: string | null;
+  onSelect: (id: string) => void;
 };
 
-export function CenterList({ centers, selectedId, onSelect }: Props) {
-  const groups = Array.from(new Set(centers.map(c => c.category)));
-
+export function CenterList({ config, selectedId, onSelect }: Props) {
   return (
     <div className="center-list">
-      {groups.map(category => (
-        <section key={category}>
-          <h3>{category}</h3>
-          {centers.filter(c => c.category === category).map(center => (
-            <button
-              key={center.id}
-              type="button"
-              className={selectedId === center.id ? "center-row is-selected" : "center-row"}
-              onClick={() => onSelect(center)}
-            >
-              <span>{center.name}</span>
-              {center.status === "perspektivisch" ? <small>perspektivisch</small> : null}
-            </button>
-          ))}
-        </section>
-      ))}
+      {config.centerCategories.map(cat => {
+        const centers = config.centers.filter(c => c.categoryId === cat.id);
+        if (!centers.length) return null;
+        return (
+          <section key={cat.id} aria-labelledby={`group-${cat.id}`}>
+            <h3 id={`group-${cat.id}`}>
+              <LegendSymbol shape={cat.symbol} fill={cat.color} />
+              {cat.groupLabel} <span className="count">({centers.length})</span>
+            </h3>
+            <ul>
+              {centers.map(center => (
+                <li key={center.id}>
+                  <button
+                    type="button"
+                    className={selectedId === center.id ? "center-row is-selected" : "center-row"}
+                    aria-pressed={selectedId === center.id}
+                    onClick={() => onSelect(center.id)}
+                  >
+                    <span>{center.name}</span>
+                    {center.status === "perspektivisch" ? <small className="chip">perspektivisch</small> : null}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
     </div>
   );
 }

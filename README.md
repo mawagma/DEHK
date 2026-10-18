@@ -1,53 +1,52 @@
-# GMA Digitales Einzelhandelskonzept – Web Template V1
+# GMA Digitales Einzelhandelskonzept – PUBLIC Web-App
 
-Dieser Prototyp ist der technische Startpunkt für die PUBLIC-Webanwendung.
+React + TypeScript + Vite. Karten über das ArcGIS Maps SDK; solange keine WebMap-IDs eingetragen sind, zeigt jede Seite eine **schematische Beispielkarte mit Beispieldaten**.
 
-## Enthalten
-- React + TypeScript + Vite
-- GMA-Designsystem als CSS-Variablen und wiederverwendbare Komponenten
-- Seite `Überblick`
-- Seite `Zentren & Standorte`
-- echte 70/30 → 30/70-Layoutinteraktion für das Zentrenprofil
-- kommunale Konfigurationsdatei für Wiesbaden
-- ArcGIS-WebMap-Komponente mit Fallback-Platzhalter
-- responsive Desktop-/Tablet-/Mobile-Layouts
+## Seiten
+| Route | Inhalt |
+|---|---|
+| `#/` | Überblick: Zentrenkarte, Kennzahlen, Themenkacheln |
+| `#/zentren` | Zentren & Standorte: Karte + Liste (70/30), Profil (30/70), Auswahl in der URL (`?zentrum=…&ansicht=profil`) |
+| `#/nahversorgung` | Versorgungsgrad als Hexagone, Lebensmittelmärkte, Legende |
+| `#/einzelhandelsstruktur` | Betriebe als Punkte, Filter Sortiment/Standorttyp/Raum, Kennzahl und Diagramme |
+| `#/einzelhandel-steuern` | Grundprinzipien, Steuerungslogik, Sortimentsliste mit Suche, Beispiele, FAQ |
+
+Routing per `HashRouter`: funktioniert auf jedem statischen Hosting ohne Server-Rewrite und unter beliebigen Unterpfaden.
 
 ## Starten
-1. Node.js 20+ installieren.
-2. Im Projektordner:
-   ```bash
-   npm install
-   npm run dev
-   ```
-3. Die im Terminal ausgegebene lokale URL öffnen.
+```bash
+npm install
+npm run dev      # Entwicklung
+npm test         # Tests (Vitest)
+npm run build    # Produktionsbuild nach dist/
+```
+
+## GitHub Pages
+Die fertig gebaute Seite liegt in `docs/` und wird von GitHub Pages direkt ausgeliefert, ohne Build auf GitHub.
+- Einstellung: *Settings → Pages → Deploy from a branch → `main` / `/docs`*
+- Adresse: https://mawagma.github.io/DEHK/
+- **Nach jeder Code-Änderung:** `npm run build:pages` ausführen und den Ordner `docs/` mit committen.
+- `docs/` nicht von Hand bearbeiten, er wird bei jedem Build komplett neu erzeugt.
+
+## Neue Kommune
+1. `src/config/municipalities/<kommune>.ts` als `MunicipalityConfig` anlegen (Typen in `src/config/types.ts`).
+2. In `src/config/index.ts` eintragen; Auswahl beim Build über `VITE_MUNICIPALITY=<id>`.
+3. Module über `modules` ein-/ausschalten.
 
 ## ArcGIS anbinden
-Öffne:
-`src/config/municipalities/wiesbaden.ts`
+In der Kommunen-Konfiguration unter `arcgis` eintragen:
+- `webMaps.overview`, `webMaps.centers`, `webMaps.supply`, `webMaps.retailStructure` – Item-IDs **öffentlich freigegebener** WebMaps
+- `centersLayerId` – Layer-ID des Zentrenlayers in der Zentren-WebMap (für Kartenklick, Hervorhebung, Zoom)
+- `centerIdField` – Attributfeld mit der Zentren-ID (Standard `CENTER_ID`), Werte müssen den `id`s in `centers` entsprechen
 
-Ersetze:
-- `YOUR_OVERVIEW_WEBMAP_ID`
-- `YOUR_CENTERS_WEBMAP_ID`
+Optional `.env`: `VITE_ARCGIS_PORTAL_URL` für ein Enterprise-Portal.
 
-durch die Item-IDs der **öffentlich freigegebenen** WebMaps in ArcGIS Online.
+Noch nicht umgesetzt für echte ArcGIS-Daten: Filter der Einzelhandelsstruktur als Layer-Abfrage (Statistics Query) und Klick auf Märkte/Betriebe in der echten Karte. Beides braucht die realen Layer und Feldnamen.
 
-Die Komponente `src/components/maps/ArcGISMap.tsx` lädt dann automatisch die jeweilige WebMap über `@arcgis/core`.
+## Beispieldaten
+`src/demo/` erzeugt eine schematische Stadtkarte, 1.606 erfundene Betriebe, Märkte und Hexagone. Sie dienen nur der Gestaltung und Interaktion und sind in der Oberfläche als Beispiel gekennzeichnet. Keine fachliche Aussage.
 
-### Portal
-Standard ist `https://www.arcgis.com`.
-Für eine Enterprise-Portal-URL kann `VITE_ARCGIS_PORTAL_URL` in einer `.env` gesetzt werden.
-
-## Wichtig zur Datenlogik
-- Fachliche Berechnungen erfolgen vorgelagert.
-- PUBLIC erhält ausschließlich freigegebene Layer/Views.
-- Das Frontend visualisiert und filtert fertige Daten.
-- Die in V1 hinterlegten Wiesbaden-Werte dienen dem Prototyp. Vor Veröffentlichung fachlich/freigabeseitig prüfen.
-
-## Nächste Integrationsstufe
-Für echte Auswahl direkt aus der ArcGIS-Karte:
-1. Layer in der WebMap eindeutig benennen.
-2. In `ArcGISMap` `view.on("click")` + `view.hitTest()` ergänzen.
-3. Treffer des Zentrenlayers anhand `CENTER_ID` an `CentersPage` zurückgeben.
-4. denselben State für Liste und Karte verwenden.
-
-Im V1-Prototyp ist die Listenwahl bereits vollständig funktionsfähig und bewusst die zuverlässige Baseline.
+## Datenprinzip
+- Fachliche Berechnungen erfolgen vorgelagert durch GMA.
+- PUBLIC erhält ausschließlich freigegebene Layer/Views; keine exakten Verkaufsflächen oder Umsätze einzelner Betriebe.
+- Wiesbaden-Werte und -Texte vor Veröffentlichung fachlich freigeben.
