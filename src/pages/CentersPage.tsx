@@ -33,7 +33,7 @@ export function CentersPage({ config }: { config: MunicipalityConfig }) {
 
   return (
     <>
-      <PageIntro image={config.heroImage} title="Zentren & Standorte" text="Zentren im Stadtgebiet über Karte oder Liste erkunden und Profile mit weiteren Informationen aufrufen." />
+      <PageIntro image={config.pageImages?.zentren} title="Zentren & Standorte" text="Zentren im Stadtgebiet über Karte oder Liste erkunden und Profile mit weiteren Informationen aufrufen." />
       <section className="page">
 
       <div className={profileOpen ? "workspace is-profile" : "workspace"}>

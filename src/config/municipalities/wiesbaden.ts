@@ -14,10 +14,19 @@ export const wiesbadenConfig: MunicipalityConfig = {
   heroImage: {
     src: "./images/wiesbaden-neroberg.webp",
     focusX: "46%",
-    author: "Martin Kraft",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:MK_36878-82_Wiesbaden_vom_Neroberg.jpg",
-    license: "CC BY-SA 3.0",
-    licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/"
+    credit: {
+      author: "Martin Kraft",
+      sourceUrl: "https://commons.wikimedia.org/wiki/File:MK_36878-82_Wiesbaden_vom_Neroberg.jpg",
+      license: "CC BY-SA 3.0",
+      licenseUrl: "https://creativecommons.org/licenses/by-sa/3.0/"
+    }
+  },
+  // Fotos von gma.biz (Nutzungsrechte geklärt)
+  pageImages: {
+    zentren: { src: "./images/gma/zentren.webp", cardSrc: "./images/gma/zentren-card.webp" },
+    nahversorgung: { src: "./images/gma/nahversorgung.webp", cardSrc: "./images/gma/nahversorgung-card.webp" },
+    einzelhandelsstruktur: { src: "./images/gma/einzelhandelsstruktur.webp", cardSrc: "./images/gma/einzelhandelsstruktur-card.webp" },
+    "einzelhandel-steuern": { src: "./images/gma/einzelhandel-steuern.webp", cardSrc: "./images/gma/einzelhandel-steuern-card.webp" }
   },
   modules: { zentren: true, nahversorgung: true, einzelhandelsstruktur: true, "einzelhandel-steuern": true },
 

@@ -32,7 +32,7 @@ export function RetailStructurePage({ config }: { config: MunicipalityConfig }) 
 
   return (
     <>
-      <PageIntro image={config.heroImage} title="Einzelhandelsstruktur" text={config.retail.intro} />
+      <PageIntro image={config.pageImages?.einzelhandelsstruktur} title="Einzelhandelsstruktur" text={config.retail.intro} />
       <section className="page">
       <RetailFilterBar value={filter} onChange={setFilter} assortments={assortments} locationTypes={locationTypes} districts={districts} />
 

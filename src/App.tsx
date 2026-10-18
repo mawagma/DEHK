@@ -23,6 +23,7 @@ export default function App({ config }: { config: MunicipalityConfig }) {
       </a>
       <AppHeader config={config} />
       <main id="inhalt" tabIndex={-1}>
+        <div key={pathname} className="route-fade">
         <ErrorBoundary resetKey={pathname}>
         <Routes>
           <Route path="/" element={<OverviewPage config={config} />} />
@@ -33,6 +34,7 @@ export default function App({ config }: { config: MunicipalityConfig }) {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </ErrorBoundary>
+        </div>
       </main>
       <AppFooter config={config} />
     </div>

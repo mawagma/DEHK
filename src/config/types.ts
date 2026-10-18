@@ -57,15 +57,14 @@ export type Faq = { question: string; answer: string };
 
 export type IconName = "pin" | "cart" | "chart" | "document" | "building" | "leaf" | "info" | "mail";
 
-/** Stadtbild für Seitenköpfe. Lizenzangaben werden auf der Seite angezeigt (Pflicht bei CC-Lizenzen). */
+/** Bild für Seitenköpfe/Kacheln. Bei CC-Lizenzen ist der Nachweis Pflicht und wird angezeigt. */
 export type HeroImage = {
   src: string;
-  /** Horizontale Bildposition (CSS), damit das Motiv neben der blauen Fläche sichtbar bleibt. */
+  /** Kleinere Variante für Kacheln. */
+  cardSrc?: string;
+  /** Horizontale Bildposition (CSS), damit das Motiv sichtbar bleibt. */
   focusX?: string;
-  author: string;
-  sourceUrl: string;
-  license: string;
-  licenseUrl: string;
+  credit?: { author: string; sourceUrl: string; license: string; licenseUrl: string };
 };
 
 export type MunicipalityConfig = {
@@ -77,6 +76,8 @@ export type MunicipalityConfig = {
   /** Inhalte sind Beispiel-/Prototypdaten und noch nicht fachlich freigegeben. */
   isDemo: boolean;
   heroImage?: HeroImage;
+  /** Bild je Themenseite (Seitenkopf und Kachel auf der Startseite). */
+  pageImages?: Partial<Record<ModuleId, HeroImage>>;
   modules: Record<ModuleId, boolean>;
   contact: { email: string; imprintUrl: string; privacyUrl: string; conceptUrl?: string };
   arcgis: ArcGISConfig;
