@@ -1,31 +1,34 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { useEffect } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import type { MunicipalityConfig } from "./config/types";
+import { AppFooter } from "./components/layout/AppFooter";
 import { AppHeader } from "./components/layout/AppHeader";
-import { OverviewPage } from "./pages/OverviewPage";
 import { CentersPage } from "./pages/CentersPage";
-import { wiesbadenConfig } from "./config/municipalities/wiesbaden";
+import { OverviewPage } from "./pages/OverviewPage";
+import { RetailStructurePage } from "./pages/RetailStructurePage";
+import { SteeringPage } from "./pages/SteeringPage";
+import { SupplyPage } from "./pages/SupplyPage";
 
-export default function App() {
+export default function App({ config }: { config: MunicipalityConfig }) {
+  const { pathname } = useLocation();
+  useEffect(() => window.scrollTo(0, 0), [pathname]);
+  const m = config.modules;
+
   return (
     <div className="app-shell">
-      <AppHeader config={wiesbadenConfig} />
-      <main>
+      <a className="skip-link" href="#inhalt">Zum Inhalt springen</a>
+      <AppHeader config={config} />
+      <main id="inhalt" tabIndex={-1}>
         <Routes>
-          <Route path="/" element={<OverviewPage config={wiesbadenConfig} />} />
-          <Route path="/zentren" element={<CentersPage config={wiesbadenConfig} />} />
+          <Route path="/" element={<OverviewPage config={config} />} />
+          {m.zentren ? <Route path="/zentren" element={<CentersPage config={config} />} /> : null}
+          {m.nahversorgung ? <Route path="/nahversorgung" element={<SupplyPage config={config} />} /> : null}
+          {m.einzelhandelsstruktur ? <Route path="/einzelhandelsstruktur" element={<RetailStructurePage config={config} />} /> : null}
+          {m["einzelhandel-steuern"] ? <Route path="/einzelhandel-steuern" element={<SteeringPage config={config} />} /> : null}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
-      <footer className="app-footer">
-        <div>
-          <strong>GMA</strong> · Forschen. Beraten. Umsetzen.
-        </div>
-        <div className="footer-links">
-          <span>{wiesbadenConfig.conceptStatus}</span>
-          <span>{wiesbadenConfig.dataStatus}</span>
-          <span>Quellen</span>
-          <span>Impressum</span>
-        </div>
-      </footer>
+      <AppFooter config={config} />
     </div>
   );
 }

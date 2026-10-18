@@ -1,56 +1,68 @@
-import { Link } from "react-router-dom";
-import { ArcGISMap } from "../components/maps/ArcGISMap";
+import { useMemo } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import type { IconName, MunicipalityConfig } from "../config/types";
+import { getDemoData } from "../demo";
+import { centerFeatures } from "../components/centers/centerFeatures";
+import { navItems } from "../components/layout/navigation";
+import { MapPanel } from "../components/maps/MapPanel";
+import { LegendSymbol, SchematicMap } from "../components/maps/SchematicMap";
 import { MetricCard } from "../components/ui/MetricCard";
 import { TopicCard } from "../components/ui/TopicCard";
-import type { wiesbadenConfig } from "../config/municipalities/wiesbaden";
 
-type Config = typeof wiesbadenConfig;
-type Props = { config: Config };
+const metricIcons: IconName[] = ["building", "pin", "chart"];
 
-export function OverviewPage({ config }: Props) {
+export function OverviewPage({ config }: { config: MunicipalityConfig }) {
+  const navigate = useNavigate();
+  const demo = getDemoData(config);
+  const features = useMemo(() => (demo ? centerFeatures(config, demo, false) : []), [config, demo]);
+  const openCenter = (id: string) => navigate(`/zentren?zentrum=${encodeURIComponent(id)}`);
+  // Zentren haben keine eigene Kachel: die Karte ist ihr Einstieg.
+  const topics = navItems(config).filter(i => i.module && i.module !== "zentren");
+
   return (
     <>
-      <section className="hero-section">
-        <div className="hero-copy">
-          <span className="eyebrow">Einzelhandel in {config.municipality}</span>
-          <h1>Ein digitales Konzept, das räumliche Zusammenhänge verständlich macht.</h1>
-          <p>
-            Erkunden Sie Zentren und Standorte und erhalten Sie einen schnellen Einstieg in die
-            zentralen Themen des Einzelhandelskonzepts.
-          </p>
-          <Link className="primary-button" to="/zentren">Zentren entdecken →</Link>
-
-          <div className="metric-grid">
-            {config.overviewMetrics.map(metric => <MetricCard key={metric.label} {...metric} />)}
-          </div>
-        </div>
-
+      <section className="hero">
         <div className="hero-map">
-          <div className="map-heading">
-            <div>
-              <span className="eyebrow">Räumlicher Einstieg</span>
-              <h2>Zentrenstruktur</h2>
-            </div>
-            <Link to="/zentren">Alle Zentren →</Link>
-          </div>
-          <ArcGISMap
-            webMapId={config.arcgis.overviewWebMapId}
+          <MapPanel
+            webMapId={config.arcgis.webMaps.overview}
             portalUrl={config.arcgis.portalUrl}
             ariaLabel="Übersichtskarte der Zentrenstruktur"
+            fallback={demo ? (
+              <SchematicMap
+                ariaLabel={`Beispielkarte der Zentren in ${config.municipality}. Ein Zentrum auswählen, um es auf der Seite Zentren & Standorte zu öffnen.`}
+                outline={demo.outline}
+                rivers={demo.rivers}
+                features={features}
+                onSelect={openCenter}
+                legend={
+                  <>
+                    <strong>Zentren und Standorte</strong>
+                    {config.centerCategories.map(c => (
+                      <span key={c.id} className="legend-row"><LegendSymbol shape={c.symbol} fill={c.color} />{c.label}</span>
+                    ))}
+                  </>
+                }
+              />
+            ) : null}
           />
+        </div>
+
+        <div className="hero-panel">
+          <span className="eyebrow">{config.municipality} · {config.conceptStatus}</span>
+          <h1>{config.overview.headline}</h1>
+          <p>{config.overview.intro}</p>
+          <Link className="primary-button on-dark" to="/zentren">Zentren entdecken →</Link>
         </div>
       </section>
 
-      <section className="topic-section">
-        <div className="section-heading">
-          <span className="eyebrow">Themenbereiche</span>
-          <h2>Ein Konzept – mehrere Perspektiven</h2>
+      <section className="overview-body">
+        <div className="metric-grid" aria-label={`${config.municipality} im Überblick`}>
+          {config.overview.metrics.map((m, i) => <MetricCard key={m.label} icon={metricIcons[i % metricIcons.length]} {...m} />)}
         </div>
+
+        <h2 className="section-title">Themen entdecken</h2>
         <div className="topic-grid">
-          <TopicCard eyebrow="01" title="Zentren & Standorte" text="Zentren im Stadtgebiet erkunden und Profile öffnen." to="/zentren" />
-          <TopicCard eyebrow="02" title="Nahversorgung" text="Fußläufige Erreichbarkeit und Nahversorgungsangebote betrachten." disabled />
-          <TopicCard eyebrow="03" title="Einzelhandelsstruktur" text="Betriebsbestand nach Sortiment, Standorttyp und Raum analysieren." disabled />
-          <TopicCard eyebrow="04" title="Einzelhandel steuern" text="Steuerungsgrundsätze anhand verständlicher Beispiele nachvollziehen." disabled />
+          {topics.map(t => <TopicCard key={t.to} icon={t.icon!} title={t.label} text={t.teaser!} to={t.to} />)}
         </div>
       </section>
     </>

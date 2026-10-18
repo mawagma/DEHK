@@ -1,76 +1,121 @@
 import "@arcgis/core/assets/esri/themes/light/main.css";
 import { useEffect, useRef, useState } from "react";
 
+type Selection = {
+  /** Layer-ID in der WebMap, deren Features auswählbar sind. */
+  layerId?: string;
+  /** Attributfeld mit der fachlichen ID (z. B. CENTER_ID). */
+  idField: string;
+  selectedId?: string | null;
+  onSelect: (id: string) => void;
+};
+
 type Props = {
   webMapId: string;
   portalUrl?: string;
   ariaLabel: string;
-  compact?: boolean;
+  selection?: Selection;
 };
 
-const isPlaceholder = (id: string) => !id || id.startsWith("YOUR_");
+type Status = "loading" | "ready" | "error";
 
-export function ArcGISMap({ webMapId, portalUrl, ariaLabel, compact }: Props) {
+export function ArcGISMap({ webMapId, portalUrl, ariaLabel, selection }: Props) {
   const mapDiv = useRef<HTMLDivElement | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const viewRef = useRef<__esri.MapView | null>(null);
+  const layerRef = useRef<__esri.FeatureLayer | null>(null);
+  const highlightRef = useRef<__esri.Handle | null>(null);
+  const onSelectRef = useRef(selection?.onSelect);
+  onSelectRef.current = selection?.onSelect;
+  const [status, setStatus] = useState<Status>("loading");
+  const [message, setMessage] = useState<string | null>(null);
+  const layerId = selection?.layerId;
+  const idField = selection?.idField;
 
   useEffect(() => {
-    if (isPlaceholder(webMapId) || !mapDiv.current) return;
-
-    let view: any;
+    if (!mapDiv.current) return;
+    let destroyed = false;
+    let view: __esri.MapView | null = null;
+    setStatus("loading");
 
     (async () => {
       try {
-        const [{ default: WebMap }, { default: MapView }, esriConfig] = await Promise.all([
+        const [{ default: WebMap }, { default: MapView }, { default: esriConfig }] = await Promise.all([
           import("@arcgis/core/WebMap"),
           import("@arcgis/core/views/MapView"),
           import("@arcgis/core/config")
         ]);
-
-        if (portalUrl) esriConfig.default.portalUrl = portalUrl;
+        if (destroyed) return;
+        if (portalUrl) esriConfig.portalUrl = portalUrl;
 
         const webmap = new WebMap({ portalItem: { id: webMapId } });
-        view = new MapView({
-          container: mapDiv.current!,
-          map: webmap,
-          constraints: { snapToZoom: false }
-        });
+        view = new MapView({ container: mapDiv.current!, map: webmap, constraints: { snapToZoom: false } });
+        viewRef.current = view;
         await view.when();
+        if (destroyed) return;
+
+        if (layerId && idField) {
+          const layer = webmap.findLayerById(layerId) as __esri.FeatureLayer | undefined;
+          if (!layer) {
+            setMessage(`Layer „${layerId}“ wurde in der WebMap nicht gefunden.`);
+          } else {
+            layer.outFields = [idField];
+            layerRef.current = layer;
+            view.on("click", async event => {
+              const hit = await view!.hitTest(event, { include: [layer] });
+              const graphic = hit.results.find(r => r.type === "graphic")?.graphic;
+              const id = graphic?.attributes?.[idField];
+              if (id == null) return;
+              onSelectRef.current?.(String(id));
+            });
+          }
+        }
+        setStatus("ready");
       } catch (e) {
-        console.error(e);
-        setError("Die ArcGIS-WebMap konnte nicht geladen werden.");
+        if (destroyed) return;
+        console.error("ArcGIS WebMap konnte nicht geladen werden", e);
+        setStatus("error");
       }
     })();
 
     return () => {
-      if (view) view.destroy();
+      destroyed = true;
+      highlightRef.current?.remove();
+      view?.destroy();
+      viewRef.current = null;
+      layerRef.current = null;
     };
-  }, [webMapId, portalUrl]);
+  }, [webMapId, portalUrl, layerId, idField]);
 
-  if (isPlaceholder(webMapId)) {
-    return (
-      <div className={`map-placeholder ${compact ? "is-compact" : ""}`} role="img" aria-label={ariaLabel}>
-        <svg viewBox="0 0 800 500" aria-hidden="true">
-          <rect x="0" y="0" width="800" height="500" rx="20" className="map-bg" />
-          <path d="M50 380 C190 300 240 410 390 330 S620 220 770 300" className="river" />
-          <path d="M80 120 C230 65 360 110 470 70 S660 90 730 150" className="road" />
-          <path d="M100 250 C240 180 350 250 470 205 S650 170 720 230" className="road" />
-          <circle cx="305" cy="230" r="13" className="pin" />
-          <circle cx="510" cy="185" r="10" className="pin secondary" />
-          <circle cx="610" cy="285" r="10" className="pin secondary" />
-          <path d="M250 270 l80 -28 60 48 -32 70 -90 -12z" className="center-shape" />
-        </svg>
-        <div className="map-placeholder-copy">
-          <strong>ArcGIS WebMap</strong>
-          <span>WebMap-ID in der kommunalen Konfiguration eintragen</span>
-        </div>
-      </div>
-    );
-  }
+  // Auswahl aus der Liste → Feature hervorheben und hinzoomen.
+  const selectedId = selection?.selectedId;
+  useEffect(() => {
+    const view = viewRef.current;
+    const layer = layerRef.current;
+    highlightRef.current?.remove();
+    if (status !== "ready" || !view || !layer || !idField || !selectedId) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const where = `${idField} = '${selectedId.replace(/'/g, "''")}'`;
+        const { features } = await layer.queryFeatures({ where, returnGeometry: true, outFields: [idField] });
+        if (cancelled || !features.length) return;
+        const layerView = await view.whenLayerView(layer);
+        highlightRef.current = layerView.highlight(features);
+        await view.goTo(features, { duration: 600 });
+      } catch (e) {
+        if (!cancelled) console.error("Zoom auf Auswahl fehlgeschlagen", e);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedId, status, idField]);
 
   return (
-    <div className="arcgis-map-shell" aria-label={ariaLabel}>
-      {error ? <div className="map-error">{error}</div> : null}
+    <div className="arcgis-map-shell" role="region" aria-label={ariaLabel} aria-busy={status === "loading"}>
+      {status === "loading" ? <div className="map-status">Karte wird geladen …</div> : null}
+      {status === "error" ? <div className="map-status is-error">Die Karte konnte nicht geladen werden. Bitte später erneut versuchen.</div> : null}
+      {message ? <div className="map-status is-error">{message}</div> : null}
       <div className="arcgis-map" ref={mapDiv} />
     </div>
   );

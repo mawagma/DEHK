@@ -1,70 +1,74 @@
-import { useMemo, useState } from "react";
-import { ArcGISMap } from "../components/maps/ArcGISMap";
+import { useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
+import type { MunicipalityConfig } from "../config/types";
+import { getDemoData } from "../demo";
 import { CenterList } from "../components/centers/CenterList";
 import { CenterProfile } from "../components/centers/CenterProfile";
-import type { Center, wiesbadenConfig } from "../config/municipalities/wiesbaden";
+import { categoryOf, centerFeatures } from "../components/centers/centerFeatures";
+import { MapPanel } from "../components/maps/MapPanel";
+import { LegendSymbol, SchematicMap } from "../components/maps/SchematicMap";
+import { DemoNotice, PageIntro } from "../components/ui/Notes";
 
-type Config = typeof wiesbadenConfig;
-type Props = { config: Config };
+export function CentersPage({ config }: { config: MunicipalityConfig }) {
+  // Ein gemeinsamer Auswahlzustand für Karte und Liste – in der URL, damit Zurück/Teilen funktioniert.
+  const [params, setParams] = useSearchParams();
+  const selected = config.centers.find(c => c.id === params.get("zentrum")) ?? null;
+  const profileOpen = !!selected && params.get("ansicht") === "profil";
+  const demo = getDemoData(config);
+  const features = useMemo(() => (demo ? centerFeatures(config, demo, true) : []), [config, demo]);
+  const focus = selected ? demo?.centers.find(c => c.id === selected.id)?.shape ?? null : null;
 
-export function CentersPage({ config }: Props) {
-  const [selected, setSelected] = useState<Center | null>(null);
-  const [profileOpen, setProfileOpen] = useState(false);
+  const select = (id: string) => setParams({ zentrum: id }, { replace: true });
+  const openProfile = () => selected && setParams({ zentrum: selected.id, ansicht: "profil" });
+  const back = () => selected && setParams({ zentrum: selected.id });
 
-  const selectedId = selected?.id;
-  const subtitle = useMemo(
-    () => selected ? `${selected.category} · ${selected.name}` : "Gesamtstädtische Übersicht",
-    [selected]
+  const legend = (
+    <>
+      <strong>Zentren und Standorte</strong>
+      {config.centerCategories.map(c => (
+        <span key={c.id} className="legend-row"><LegendSymbol shape={c.symbol} fill={c.color} />{c.label}</span>
+      ))}
+    </>
   );
 
-  function selectCenter(center: Center) {
-    setSelected(center);
-  }
-
-  function openProfile() {
-    if (selected) setProfileOpen(true);
-  }
-
   return (
-    <section className="centers-page">
-      <div className="page-heading">
-        <div>
-          <span className="eyebrow">Zentren- und Standortstruktur</span>
-          <h1>Zentren &amp; Standorte</h1>
-          <p>{profileOpen ? subtitle : "Zentren über Karte oder Liste erkunden und anschließend das Profil öffnen."}</p>
-        </div>
-        {!profileOpen && selected ? (
-          <button className="primary-button" type="button" onClick={openProfile}>
-            {selected.name} ansehen →
-          </button>
-        ) : null}
-      </div>
+    <section className="page">
+      <PageIntro title="Zentren & Standorte" text="Zentren im Stadtgebiet über Karte oder Liste erkunden und Profile mit weiteren Informationen aufrufen." />
 
-      <div className={profileOpen ? "centers-workspace is-profile" : "centers-workspace"}>
-        <div className="centers-map-pane">
-          <ArcGISMap
-            webMapId={config.arcgis.centersWebMapId}
+      <div className={profileOpen ? "workspace is-profile" : "workspace"}>
+        <div className="workspace-map">
+          <MapPanel
+            webMapId={config.arcgis.webMaps.centers}
             portalUrl={config.arcgis.portalUrl}
-            ariaLabel={profileOpen && selected ? `Standortkarte ${selected.name}` : "Zentrenübersicht"}
-            compact={profileOpen}
+            ariaLabel={profileOpen && selected ? `Karte ${selected.name}` : "Karte der Zentren und Standorte"}
+            selection={{ layerId: config.arcgis.centersLayerId, idField: config.arcgis.centerIdField, selectedId: selected?.id, onSelect: select }}
+            fallback={demo ? (
+              <SchematicMap
+                ariaLabel="Beispielkarte der Zentren und Standorte"
+                outline={demo.outline}
+                rivers={demo.rivers}
+                features={features}
+                selectedId={selected?.id}
+                onSelect={select}
+                focus={focus}
+                legend={profileOpen ? undefined : legend}
+              />
+            ) : null}
           />
         </div>
 
-        <aside className="centers-side-pane">
+        <aside className="workspace-side" aria-label={profileOpen ? "Zentrenprofil" : "Zentrenliste"}>
           {profileOpen && selected ? (
-            <CenterProfile center={selected} onBack={() => setProfileOpen(false)} />
+            <CenterProfile center={selected} category={categoryOf(config, selected.categoryId)} onBack={back} />
           ) : (
             <>
               <div className="panel-heading">
-                <span className="eyebrow">Auswahl</span>
-                <h2>Zentren und Standorte</h2>
-                <p>Ein Zentrum auswählen und anschließend das Profil öffnen.</p>
+                <h2>Zentrenliste</h2>
+                <p>Ein Zentrum in der Liste oder Karte auswählen und das Profil öffnen.</p>
               </div>
-
-              <CenterList centers={config.centers} selectedId={selectedId} onSelect={selectCenter} />
-
+              <CenterList config={config} selectedId={selected?.id} onSelect={select} />
               <div className="sticky-action">
-                <button className="primary-button full-width" type="button" onClick={openProfile} disabled={!selected}>
+                <button className="primary-button full-width" type="button" onClick={() => openProfile()} disabled={!selected}>
                   {selected ? `${selected.name} ansehen →` : "Zentrum auswählen"}
                 </button>
               </div>
@@ -73,10 +77,7 @@ export function CentersPage({ config }: Props) {
         </aside>
       </div>
 
-      <div className="prototype-note">
-        <strong>V1-Prototyp:</strong> Die 70/30-Ansicht wechselt beim Öffnen des Profils auf 30/70.
-        Sobald eine öffentliche ArcGIS-WebMap-ID eingetragen ist, wird der Platzhalter durch die echte WebMap ersetzt.
-      </div>
+      {config.isDemo ? <DemoNotice /> : null}
     </section>
   );
 }
