@@ -2,7 +2,7 @@
 // Ersetzen durch öffentliche ArcGIS-Daten, sobald WebMap-IDs vorliegen. Keine fachliche Aussage.
 import type { MunicipalityConfig } from "../config/types";
 import { distance, hexagon, pointInPolygon, seededRandom, type Pt } from "./geometry";
-import type { DemoData, DemoStore } from "./types";
+import type { DemoData, DemoDevelopmentRow, DemoStore } from "./types";
 
 const outline: Pt[] = [
   [120, 250], [150, 170], [220, 118], [300, 80], [380, 58], [455, 70], [525, 96], [592, 140], [640, 200],
@@ -78,7 +78,7 @@ export function buildWiesbadenDemo(config: MunicipalityConfig): DemoData {
   });
 
   const stores: DemoStore[] = [];
-  const addStore = (at: Pt, locationType: string) => {
+  const addStore = (at: Pt, locationType: string, centerId?: string) => {
     const n = stores.length + 1;
     const big = locationType === "Sonderstandort" ? 3 : 1;
     stores.push({
@@ -88,7 +88,8 @@ export function buildWiesbadenDemo(config: MunicipalityConfig): DemoData {
       locationType,
       district: districtOf(at),
       assortment: pick(config.retail.assortments, assortmentWeights[locationType]),
-      sizeClass: pick(["unter 400 m²", "400 bis 800 m²", "über 800 m²"], [10, 3 * big, 1.5 * big])
+      sizeClass: pick(["unter 400 m²", "400 bis 800 m²", "über 800 m²"], [10, 3 * big, 1.5 * big]),
+      centerId
     });
   };
 
@@ -97,7 +98,7 @@ export function buildWiesbadenDemo(config: MunicipalityConfig): DemoData {
     if (!pos || c.status === "perspektivisch") continue;
     const type = categoryLabel(c.categoryId);
     // Profilzahl aus der Konfiguration, sonst Standardwert je Kategorie
-    for (let i = 0; i < (c.stores ?? storeCounts[c.categoryId] ?? 0); i++) addStore(gauss(pos.at, pos.r * 0.45), type);
+    for (let i = 0; i < (c.stores ?? storeCounts[c.categoryId] ?? 0); i++) addStore(gauss(pos.at, pos.r * 0.45), type, c.id);
   }
   while (stores.length < TOTAL_STORES) addStore(randomInside(), "Sonstige Lage");
 
@@ -124,6 +125,24 @@ export function buildWiesbadenDemo(config: MunicipalityConfig): DemoData {
     }
   }
 
+  // Entwicklung: 2025 = aktueller Bestand; frühere Jahre über feste Demo-Faktoren je Warengruppe.
+  const pastFactor: Record<string, number> = {
+    "Nahrungs- und Genussmittel": 1.03, "Gesundheit, Körperpflege": 1.0, "Bekleidung, Schuhe": 1.2, "Elektrowaren, Medien": 1.16,
+    "Haus, Einrichtung, Möbel": 1.06, "Bau, Garten, Heimtier": 0.97, "Sonstige Sortimente": 1.09
+  };
+  const developmentTable: DemoDevelopmentRow[] = [];
+  for (const assortment of config.retail.assortments) {
+    for (const locationType of config.retail.locationTypes) {
+      const now = stores.filter(st => st.assortment === assortment && st.locationType === locationType).length;
+      const f = pastFactor[assortment] ?? 1.05;
+      developmentTable.push(
+        { year: "2015", assortment, locationType, count: Math.round(now * f) },
+        { year: "2020", assortment, locationType, count: Math.round(now * (1 + (f - 1) / 2)) },
+        { year: "2025", assortment, locationType, count: now }
+      );
+    }
+  }
+
   return {
     outline,
     rivers: [river, tributary],
@@ -131,11 +150,6 @@ export function buildWiesbadenDemo(config: MunicipalityConfig): DemoData {
     stores,
     markets,
     hexes,
-    development: [
-      { label: "2010", value: 1782 },
-      { label: "2015", value: 1704 },
-      { label: "2020", value: 1652 },
-      { label: "2025", value: 1606 }
-    ]
+    developmentTable
   };
 }

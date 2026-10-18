@@ -29,3 +29,6 @@ Solange `isDemo: true` gilt, zeigt die Seite den Hinweis „Prototyp mit Beispie
 | Über das Konzept | `about.*` | Anlass, Prozess, Methodik, Datenquellen mit Stand, Downloads (URLs) |
 | Glossar | `glossary` | Definitionen prüfen |
 | Demo-Daten | `src/demo/` | Werden komplett durch ArcGIS-Daten ersetzt (Geometrien, Betriebe, Märkte, Hexagone, Entwicklung) |
+| Struktur | `retail.minCount` | Schwelle für kleine Fallzahlen bestätigen (Standard 3) |
+| Struktur | Entwicklungstabelle (heute `src/demo/`) | Betriebe je Erhebungsjahr × Warengruppe × Standorttyp als Tabelle/Layer |
+| Struktur | Zuordnung Betrieb → Zentrum (heute `src/demo/`) | Attribut im öffentlichen Betriebslayer, z. B. `CENTER_ID` |

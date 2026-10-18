@@ -180,3 +180,16 @@ Ein Filterzustand bleibt die einzige Quelle für Karte, Kennzahlen und Diagramme
   - Neue Logik in `src/lib/` (`centers.ts`, `assortments.ts`, `about.ts`) mit Tests.
 - **Offen:** Filter aus der URL (`?zentrum=`, `?sortiment=`) wertet die Einzelhandelsstruktur erst in Phase 3 aus.
 - **Wie testen:** `npm test` (37 Tests); im Browser z. B. `#/zentren?vergleich=innenstadt,biebrich`, `#/einzelhandel-steuern?kapitel=sortimentsliste` (Suche „E-Bike“), `#/ueber-das-konzept?begriff=grossflaechigkeit`.
+
+### Phase 3 – erledigt
+- **Geändert:**
+  - `src/lib/retailFilter.ts`: `RetailFilter` mit Mehrfachauswahl (Sortiment, Raum) und Zentrumsfilter; Abgleich mit der URL (`?sortiment=…&sortiment=…&lage=…&raum=…&zentrum=…`, wiederholte Parameter, da Warengruppen Kommas enthalten); Zählen mit Anteilen, Bedarfsstufen über `retail.needLevelByAssortment`, Kreuztabelle, gefilterte Entwicklung aus vorbereiteter Tabelle, Unterdrückung kleiner Fallzahlen (`maskCount`, Schwelle `retail.minCount`, Standard 3), CSV-Export.
+  - `src/demo/`: Betriebe tragen `centerId`; vorbereitete Entwicklungstabelle Jahr × Warengruppe × Standorttyp (`developmentTable`).
+  - Filterleiste mit Checkbox-Dropdowns, aktive Filter als Chips mit „×“ und „Alle zurücksetzen“.
+  - Diagramme: Absolut + Prozent („196 · 70 %“), graue Referenzreihe Gesamtstadt bei aktivem Filter, Balken und Legende der Standorttypen klickbar (setzen Filter, tastaturbedienbar).
+  - Neue Auswertungen: Größenklassen, Bedarfsstufen, Entwicklung zur Auswahl (bei Raum-/Zentrumsfilter Hinweis statt Zahl), aufklappbare Kreuztabelle Standorttyp × Warengruppe mit dezenter Einfärbung.
+  - Kleine Fallzahlen: Kennzahl „weniger als 3“, keine Größenklassen/Kreuztabelle; Zellen unter der Schwelle als „< 3“; auch im CSV und im Ringdiagramm maskiert.
+  - CSV-Export der aggregierten Auswertung (keine Einzelbetriebe).
+  - Schalter „Nur sichtbaren Kartenausschnitt auswerten“ für die Beispielkarte (`SchematicMap.onViewChange`).
+- **Offen:** Mit echter ArcGIS-WebMap fehlt noch: Filter als Layer-Abfrage/`definitionExpression`, Auswertung per Statistics Query und Kartenausschnitt über `view.extent` – die Seite nutzt dafür dieselbe Filterstruktur, die Umsetzung braucht echte Layer und Feldnamen.
+- **Wie testen:** `npm test` (49 Tests); im Browser z. B. `#/einzelhandelsstruktur?sortiment=Bekleidung%2C%20Schuhe&raum=Mitte`, Link „Betriebe in diesem Bereich ansehen“ im Zentrenprofil, „Wo gibt es das heute?“ in der Sortimentssuche.

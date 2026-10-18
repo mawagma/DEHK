@@ -30,6 +30,8 @@ type Props = {
   focus?: Pt[] | null;
   legend?: ReactNode;
   className?: string;
+  /** Meldet den sichtbaren Ausschnitt (Kartenkoordinaten), z. B. für „sichtbaren Ausschnitt auswerten“. */
+  onViewChange?: (rect: { x: number; y: number; w: number; h: number }) => void;
 };
 
 const W = 800;
@@ -37,8 +39,11 @@ const H = 520;
 type View = { x: number; y: number; w: number };
 const HOME: View = { x: 0, y: 0, w: W };
 
-export function SchematicMap({ ariaLabel, outline, rivers, features, selectedId, onSelect, focus, legend, className }: Props) {
+export function SchematicMap({ ariaLabel, outline, rivers, features, selectedId, onSelect, focus, legend, className, onViewChange }: Props) {
   const [view, setView] = useState<View>(HOME);
+  const onViewChangeRef = useRef(onViewChange);
+  onViewChangeRef.current = onViewChange;
+  useEffect(() => { onViewChangeRef.current?.({ x: view.x, y: view.y, w: view.w, h: (view.w * H) / W }); }, [view]);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const drag = useRef<{ x: number; y: number; view: View; moved: boolean } | null>(null);
   const focusKey = focus ? focus.map(p => p.join(",")).join(";") : "";

@@ -139,6 +139,8 @@ export type MunicipalityConfig = {
     needLevelByAssortment?: Record<string, string>;
     keyMessages?: string[];
     storeDefinition?: string;
+    /** Fallzahlen unter diesem Wert werden nicht ausgewiesen (Standard 3). */
+    minCount?: number;
   };
   steering: {
     intro: string;
