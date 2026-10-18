@@ -44,7 +44,7 @@ export function SchematicMap({ ariaLabel, outline, rivers, features, selectedId,
   const focusKey = focus ? focus.map(p => p.join(",")).join(";") : "";
 
   useEffect(() => {
-    if (!focus?.length) return setView(HOME);
+    if (!focus?.length) { setView(HOME); return; }
     const b = bbox(focus);
     const w = Math.max((b.maxX - b.minX) * 6, (b.maxY - b.minY) * 6 * (W / H), 260);
     setView({ x: (b.minX + b.maxX) / 2 - w / 2, y: (b.minY + b.maxY) / 2 - (w * H) / W / 2, w });

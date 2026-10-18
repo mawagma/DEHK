@@ -26,7 +26,8 @@ function useHashSync() {
 
 export default function App({ config }: { config: MunicipalityConfig }) {
   const { pathname } = useLocation();
-  useEffect(() => window.scrollTo(0, 0), [pathname]);
+  // Geschweifte Klammern: neuere Browser geben bei scrollTo ein Promise zurück, React hielte es für eine Aufräumfunktion.
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
   useHashSync();
   const m = config.modules;
 

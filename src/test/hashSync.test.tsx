@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import { HashRouter } from "react-router-dom";
 import App from "../App";
@@ -15,6 +15,15 @@ describe("Hash-Routing", () => {
       window.dispatchEvent(new HashChangeEvent("hashchange"));
     });
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Nahversorgung");
+  });
+
+  it("stürzt nicht ab, wenn window.scrollTo ein Promise liefert (neuere Chrome-Versionen)", async () => {
+    const spy = vi.spyOn(window, "scrollTo").mockImplementation((() => Promise.resolve()) as never);
+    render(<HashRouter><App config={config} /></HashRouter>);
+    await act(async () => { window.location.hash = "#/zentren"; window.dispatchEvent(new HashChangeEvent("hashchange")); });
+    await act(async () => { window.location.hash = "#/nahversorgung"; window.dispatchEvent(new HashChangeEvent("hashchange")); });
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Nahversorgung");
+    spy.mockRestore();
   });
 
   it("rendert Navigationslinks relativ als #/…", () => {
