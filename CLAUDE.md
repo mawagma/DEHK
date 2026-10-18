@@ -75,6 +75,10 @@ When implementing feature selection:
 
 If actual IDs/field names are unknown, make them configurable. Never invent production IDs.
 
+## Deployment (GitHub Pages)
+The built site lives in `docs/` and is served by GitHub Pages from `main` / `/docs` (no build on GitHub).
+After every code change run `npm run build:pages` and commit `docs/` together with the source change. Never edit `docs/` by hand.
+
 ## Engineering
 - First run install/build and inspect actual errors.
 - Make minimal, reusable changes.

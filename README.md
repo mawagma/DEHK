@@ -21,6 +21,13 @@ npm test         # Tests (Vitest)
 npm run build    # Produktionsbuild nach dist/
 ```
 
+## GitHub Pages
+Die fertig gebaute Seite liegt in `docs/` und wird von GitHub Pages direkt ausgeliefert, ohne Build auf GitHub.
+- Einstellung: *Settings → Pages → Deploy from a branch → `main` / `/docs`*
+- Adresse: https://mawagma.github.io/DEHK/
+- **Nach jeder Code-Änderung:** `npm run build:pages` ausführen und den Ordner `docs/` mit committen.
+- `docs/` nicht von Hand bearbeiten, er wird bei jedem Build komplett neu erzeugt.
+
 ## Neue Kommune
 1. `src/config/municipalities/<kommune>.ts` als `MunicipalityConfig` anlegen (Typen in `src/config/types.ts`).
 2. In `src/config/index.ts` eintragen; Auswahl beim Build über `VITE_MUNICIPALITY=<id>`.
