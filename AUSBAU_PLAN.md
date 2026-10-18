@@ -169,3 +169,14 @@ Ein Filterzustand bleibt die einzige Quelle für Karte, Kennzahlen und Diagramme
 - **Warum:** Struktur für Phase 2–4; GMA ersetzt später nur Werte.
 - **Offen:** Anzeige der neuen Felder folgt in Phase 2. Liste der Platzhalter: `CONTENT_TODO.md`.
 - **Wie testen:** `npm test` (Config-Tests: IDs eindeutig, Beispiel-Verlinkungen gültig, Matrix rechteckig, Sonderstandorte keine ZVB, unterschiedliche Texte).
+
+### Phase 2 – erledigt
+- **Geändert:**
+  - Überblick: 4 Kennzahlen (Betriebe, Verkaufsfläche gesamt, VK je Einwohner, Zentralität; Trend im `meta`), Beschlussstand im Einstieg, Block „Kernaussagen“, Block „Was ist neu?“ mit Link auf „Über das Konzept“.
+  - Zentren: Steckbrief (`CenterProfile`) mit Lage, Versorgungsfunktion, 4 Kennzahlen, Bedarfsstufen, Magnetbetrieben, Stärken/Schwächen, neutralem Entwicklungsziel, Empfehlungen, Entwicklung; Hinweis bei perspektivischen Zentren; schlankes Profil für Sonderstandorte; Button „Betriebe in diesem Bereich ansehen“ (`/einzelhandelsstruktur?zentrum=…`, wird in Phase 3 ausgewertet). Sortierbare Tabelle aller Standorte (`CenterTable`): ZVB mit Summe, Sonderstandorte getrennt und nicht summiert. Zentrenvergleich (`CenterCompare`) mit 2–3 ZVB über `?vergleich=a,b`.
+  - Nahversorgung: Kernaussagen, Versorgungslücken, ergänzende Angebote, Erklärgrafik „Erreichbarkeit + Angebot = Versorgungsgrad“ (`SupplyInsights`).
+  - Steuern: Kapitel „Ansiedlungsleitsätze“, „Standort × Sortiment“ (Matrix mit neutralen Labels + Legende + Hinweis), „Verfahren“ mit Ansprechperson; Kapitel in der URL (`?kapitel=`); Sortimentssuche über Namen und Synonyme mit Anzeige „gefunden über …“ und Link „Wo gibt es das heute?“ (`?sortiment=…`, Mapping über `retailGroup`); Beispiele verlinken aufs Zentrenprofil.
+  - Neue Seite „Über das Konzept“ (`/ueber-das-konzept`): Anlass/Prozess, Beschlussstand, Methodik, Datenstand, Glossar mit Sprungziel (`?begriff=`), Downloads, Ansprechperson. `GlossaryTerm` für dezente Begriffslinks. Footer: „Über das Konzept“, „Glossar“, „Konzept (PDF)“.
+  - Neue Logik in `src/lib/` (`centers.ts`, `assortments.ts`, `about.ts`) mit Tests.
+- **Offen:** Filter aus der URL (`?zentrum=`, `?sortiment=`) wertet die Einzelhandelsstruktur erst in Phase 3 aus.
+- **Wie testen:** `npm test` (37 Tests); im Browser z. B. `#/zentren?vergleich=innenstadt,biebrich`, `#/einzelhandel-steuern?kapitel=sortimentsliste` (Suche „E-Bike“), `#/ueber-das-konzept?begriff=grossflaechigkeit`.

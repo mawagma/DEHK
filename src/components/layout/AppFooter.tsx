@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import type { MunicipalityConfig } from "../../config/types";
+import { aboutEnabled } from "../../lib/about";
 import { ImageCredit } from "../ui/ImageCredit";
 import { navItems } from "./navigation";
 
@@ -17,10 +18,12 @@ export function AppFooter({ config }: { config: MunicipalityConfig }) {
           <ul>{navItems(config).map(i => <li key={i.to}><Link to={i.to}>{i.label}</Link></li>)}</ul>
         </nav>
         <div>
-          <h2>Kontakt</h2>
+          <h2>Konzept &amp; Kontakt</h2>
           <ul>
-            <li><a href={`mailto:${c.email}`}>{c.email}</a></li>
+            {aboutEnabled(config) ? <li><Link to="/ueber-das-konzept">Über das Konzept</Link></li> : null}
+            {aboutEnabled(config) && config.glossary?.length ? <li><Link to="/ueber-das-konzept?abschnitt=glossar">Glossar</Link></li> : null}
             {c.conceptUrl ? <li><a href={c.conceptUrl}>Konzept (PDF)</a></li> : null}
+            <li><a href={`mailto:${c.email}`}>{c.email}</a></li>
             <li><a href={c.imprintUrl} target="_blank" rel="noreferrer">Impressum</a></li>
             <li><a href={c.privacyUrl} target="_blank" rel="noreferrer">Datenschutz</a></li>
           </ul>

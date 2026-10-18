@@ -2,12 +2,15 @@ import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import type { MunicipalityConfig } from "../config/types";
 import { getDemoData } from "../demo";
+import { CenterCompare } from "../components/centers/CenterCompare";
 import { CenterList } from "../components/centers/CenterList";
+import { CenterTable } from "../components/centers/CenterTable";
 import { CenterProfile } from "../components/centers/CenterProfile";
 import { categoryOf, centerFeatures } from "../components/centers/centerFeatures";
 import { MapPanel } from "../components/maps/MapPanel";
 import { LegendSymbol, SchematicMap } from "../components/maps/SchematicMap";
 import { DemoNotice, PageIntro } from "../components/ui/Notes";
+import { MAX_COMPARE, parseCompare } from "../lib/centers";
 
 export function CentersPage({ config }: { config: MunicipalityConfig }) {
   // Ein gemeinsamer Auswahlzustand für Karte und Liste – in der URL, damit Zurück/Teilen funktioniert.
@@ -18,9 +21,21 @@ export function CentersPage({ config }: { config: MunicipalityConfig }) {
   const features = useMemo(() => (demo ? centerFeatures(config, demo, true) : []), [config, demo]);
   const focus = selected ? demo?.centers.find(c => c.id === selected.id)?.shape ?? null : null;
 
-  const select = (id: string) => setParams({ zentrum: id }, { replace: true });
-  const openProfile = () => selected && setParams({ zentrum: selected.id, ansicht: "profil" });
-  const back = () => selected && setParams({ zentrum: selected.id });
+  const compare = parseCompare(params.get("vergleich"), config);
+  const compareIds = compare.map(c => c.id);
+
+  // Parameter zusammenführen, damit Auswahl und Vergleich sich nicht gegenseitig löschen
+  const update = (patch: Record<string, string | null>, replace = false) => {
+    const next = new URLSearchParams(params);
+    for (const [k, v] of Object.entries(patch)) v ? next.set(k, v) : next.delete(k);
+    setParams(next, { replace });
+  };
+  const select = (id: string) => update({ zentrum: id }, true);
+  const openProfile = (id = selected?.id) => id && update({ zentrum: id, ansicht: "profil" });
+  const back = () => update({ ansicht: null });
+  const setCompare = (ids: string[]) => update({ vergleich: ids.length ? ids.join(",") : null }, true);
+  const toggleCompare = (id: string) =>
+    setCompare(compareIds.includes(id) ? compareIds.filter(x => x !== id) : [...compareIds, id].slice(0, MAX_COMPARE));
 
   const legend = (
     <>
@@ -60,7 +75,14 @@ export function CentersPage({ config }: { config: MunicipalityConfig }) {
 
         <aside className="workspace-side" aria-label={profileOpen ? "Zentrenprofil" : "Zentrenliste"}>
           {profileOpen && selected ? (
-            <CenterProfile center={selected} category={categoryOf(config, selected.categoryId)} onBack={back} />
+            <CenterProfile
+              config={config}
+              center={selected}
+              category={categoryOf(config, selected.categoryId)}
+              onBack={back}
+              onCompare={() => toggleCompare(selected.id)}
+              compared={compareIds.includes(selected.id)}
+            />
           ) : (
             <>
               <div className="panel-heading">
@@ -77,6 +99,11 @@ export function CentersPage({ config }: { config: MunicipalityConfig }) {
           )}
         </aside>
       </div>
+
+      <CenterCompare config={config} centers={compare} onRemove={toggleCompare} onClear={() => setCompare([])} />
+      {compare.length === 1 ? <p className="demo-note">„{compare[0].name}“ ist zum Vergleich vorgemerkt. Wählen Sie ein weiteres Zentrum.</p> : null}
+
+      <CenterTable config={config} compareIds={compareIds} onToggleCompare={toggleCompare} onOpen={id => openProfile(id)} />
 
       {config.isDemo ? <DemoNotice /> : null}
     </section>

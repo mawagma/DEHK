@@ -4,6 +4,7 @@ import type { IconName, MunicipalityConfig } from "../config/types";
 import { getDemoData } from "../demo";
 import { centerFeatures } from "../components/centers/centerFeatures";
 import { navItems } from "../components/layout/navigation";
+import { aboutEnabled } from "../lib/about";
 import { MapPanel } from "../components/maps/MapPanel";
 import { LegendSymbol, SchematicMap } from "../components/maps/SchematicMap";
 import { ImageCredit } from "../components/ui/ImageCredit";
@@ -11,7 +12,7 @@ import { MetricCard } from "../components/ui/MetricCard";
 import { cssImage } from "../components/ui/Notes";
 import { TopicCard } from "../components/ui/TopicCard";
 
-const metricIcons: IconName[] = ["building", "pin", "chart"];
+const metricIcons: IconName[] = ["building", "chart", "pin", "cart"];
 
 export function OverviewPage({ config }: { config: MunicipalityConfig }) {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ export function OverviewPage({ config }: { config: MunicipalityConfig }) {
         <div className="hero-inner">
           <div className="hero-copy reveal">
             <span className="eyebrow">{config.municipality} · {config.conceptStatus}</span>
+            {config.decisionStatus ? <span className="status-pill">{config.decisionStatus}</span> : null}
             <h1>{config.overview.headline}</h1>
             <p>{config.overview.intro}</p>
             <div className="hero-actions">
@@ -45,6 +47,13 @@ export function OverviewPage({ config }: { config: MunicipalityConfig }) {
       </section>
 
       <div className="overview-body">
+        {config.overview.keyMessages?.length ? (
+          <section className="key-messages reveal" style={{ "--i": 2 } as CSSProperties} aria-labelledby="key-title">
+            <h2 id="key-title" className="eyebrow">Kernaussagen</h2>
+            <ul>{config.overview.keyMessages.map(k => <li key={k}>{k}</li>)}</ul>
+          </section>
+        ) : null}
+
         <section className="map-showcase reveal" style={{ "--i": 2 } as CSSProperties} aria-labelledby="map-title">
           <div className="map-showcase-map">
             <MapPanel
@@ -78,6 +87,17 @@ export function OverviewPage({ config }: { config: MunicipalityConfig }) {
             <Link className="primary-button" to="/zentren">Alle Zentren ansehen <span aria-hidden="true">→</span></Link>
           </div>
         </section>
+
+        {config.overview.whatsNew?.length ? (
+          <section className="whats-new" aria-labelledby="new-title">
+            <div>
+              <span className="eyebrow">Fortschreibung</span>
+              <h2 id="new-title">Was ist neu?</h2>
+              {aboutEnabled(config) ? <Link className="text-link" to="/ueber-das-konzept">Mehr zum Konzept <span aria-hidden="true">→</span></Link> : null}
+            </div>
+            <ul>{config.overview.whatsNew.map(w => <li key={w}>{w}</li>)}</ul>
+          </section>
+        ) : null}
 
         <section aria-labelledby="topics-title">
           <div className="section-head">

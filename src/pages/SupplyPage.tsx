@@ -5,7 +5,8 @@ import { DonutChart } from "../components/charts/Charts";
 import { MapPanel } from "../components/maps/MapPanel";
 import { LegendSymbol, SchematicMap, type MapFeature } from "../components/maps/SchematicMap";
 import { Icon } from "../components/ui/Icon";
-import { DemoNotice, Hint, PageIntro } from "../components/ui/Notes";
+import { SupplyInsights } from "../components/supply/SupplyInsights";
+import { DemoNotice, PageIntro } from "../components/ui/Notes";
 
 export function SupplyPage({ config }: { config: MunicipalityConfig }) {
   const demo = getDemoData(config);
@@ -95,7 +96,7 @@ export function SupplyPage({ config }: { config: MunicipalityConfig }) {
         </aside>
       </div>
 
-      <Hint title="Methodik">{config.supply.methodNote}</Hint>
+      <SupplyInsights config={config} />
       {config.isDemo ? <DemoNotice /> : null}
     </section>
     </>

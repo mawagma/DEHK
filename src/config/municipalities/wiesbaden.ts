@@ -92,9 +92,10 @@ export const wiesbadenConfig: MunicipalityConfig = {
     intro:
       "Das Digitale Einzelhandelskonzept zeigt, wo und wie sich der Einzelhandel in der Stadt entwickelt – für lebendige Zentren, eine gute Nahversorgung und eine nachhaltige Stadtentwicklung.",
     metrics: [
-      { value: "1.606", label: "Einzelhandelsbetriebe", meta: "Erhebung 2025" },
-      { value: "9 + 1", label: "Zentrale Versorgungsbereiche", meta: "bestehend + perspektivisch" },
-      { value: "3", label: "Sonderstandorte", meta: "kein zentraler Versorgungsbereich" }
+      { value: "1.606", label: "Einzelhandelsbetriebe", meta: "Erhebung 2025 · −4 % seit 2015 (Demo-Wert)" }, // TODO fachlich: Trend
+      { value: "485.870 m²", label: "Verkaufsfläche gesamt", meta: "Erhebung 2025" },
+      { value: "1,7 m²", label: "Verkaufsfläche je Einwohner", meta: "Demo-Wert · Bund: 1,5 m²" }, // TODO fachlich
+      { value: "112", label: "Einzelhandelszentralität", meta: "Demo-Wert · über 100 = Kaufkraftzufluss" } // TODO fachlich
     ],
     keyMessages: [
       `${P}Die Einkaufsinnenstadt bleibt der wichtigste Einzelhandelsstandort mit gesamtstädtischer und regionaler Ausstrahlung.`,
@@ -398,14 +399,14 @@ export const wiesbadenConfig: MunicipalityConfig = {
         label: "Nahversorgungs- und zentrenrelevant",
         description: "Sortimente des täglichen Bedarfs.",
         items: [
-          { name: "Nahrungs- und Genussmittel", synonyms: ["Lebensmittel", "Supermarkt", "Backwaren", "Bäcker", "Metzger"] },
-          { name: "Getränke", synonyms: ["Getränkemarkt", "Wein", "Bier"] },
-          { name: "Drogeriewaren", synonyms: ["Kosmetik", "Körperpflege", "Waschmittel"] },
-          { name: "Apothekenwaren", synonyms: ["Medikamente", "Apotheke"] },
-          { name: "Schnittblumen", synonyms: ["Blumen", "Floristik"] },
-          { name: "Zeitungen, Zeitschriften", synonyms: ["Presse", "Kiosk"] },
-          { name: "Tabakwaren", synonyms: ["Zigaretten", "Tabak"] },
-          { name: "Reformwaren", synonyms: ["Bio", "Naturkost"] }
+          { name: "Nahrungs- und Genussmittel", retailGroup: "Nahrungs- und Genussmittel", synonyms: ["Lebensmittel", "Supermarkt", "Backwaren", "Bäcker", "Metzger"] },
+          { name: "Getränke", retailGroup: "Nahrungs- und Genussmittel", synonyms: ["Getränkemarkt", "Wein", "Bier"] },
+          { name: "Drogeriewaren", retailGroup: "Gesundheit, Körperpflege", synonyms: ["Kosmetik", "Körperpflege", "Waschmittel"] },
+          { name: "Apothekenwaren", retailGroup: "Gesundheit, Körperpflege", synonyms: ["Medikamente", "Apotheke"] },
+          { name: "Schnittblumen", retailGroup: "Bau, Garten, Heimtier", synonyms: ["Blumen", "Floristik"] },
+          { name: "Zeitungen, Zeitschriften", retailGroup: "Elektrowaren, Medien", synonyms: ["Presse", "Kiosk"] },
+          { name: "Tabakwaren", retailGroup: "Nahrungs- und Genussmittel", synonyms: ["Zigaretten", "Tabak"] },
+          { name: "Reformwaren", retailGroup: "Nahrungs- und Genussmittel", synonyms: ["Bio", "Naturkost"] }
         ]
       },
       {
@@ -413,29 +414,29 @@ export const wiesbadenConfig: MunicipalityConfig = {
         label: "Zentrenrelevant",
         description: "Sortimente, die Zentren prägen und Besucher anziehen.",
         items: [
-          { name: "Bekleidung", synonyms: ["Mode", "Kleidung", "Textilien"] },
-          { name: "Schuhe", synonyms: ["Sneaker", "Stiefel"] },
-          { name: "Lederwaren, Taschen", synonyms: ["Koffer", "Handtaschen"] },
-          { name: "Bücher", synonyms: ["Buchhandlung"] },
-          { name: "Schreibwaren, Bürobedarf", synonyms: ["Papier", "Büroartikel", "Schulbedarf"] },
-          { name: "Spielwaren", synonyms: ["Spielzeug", "Spiele"] },
-          { name: "Sportartikel", synonyms: ["Sportbekleidung", "Sportschuhe"] },
-          { name: "Unterhaltungselektronik", synonyms: ["TV", "Fernseher", "Hi-Fi", "Spielkonsole"] },
-          { name: "Telekommunikation", synonyms: ["Handy", "Smartphone", "Mobilfunk"] },
-          { name: "Computer und Zubehör", synonyms: ["Laptop", "PC", "Tablet", "Drucker"] },
-          { name: "Foto", synonyms: ["Kamera", "Fotozubehör"] },
-          { name: "Optik, Hörgeräte", synonyms: ["Brillen", "Kontaktlinsen", "Akustiker"] },
-          { name: "Uhren, Schmuck", synonyms: ["Juwelier", "Goldschmied"] },
-          { name: "Haushaltswaren", synonyms: ["Küchenzubehör", "Kochgeschirr", "Besteck"] },
-          { name: "Glas, Porzellan, Keramik", synonyms: ["Geschirr", "Vasen"] },
-          { name: "Heimtextilien", synonyms: ["Gardinen", "Bettwäsche", "Handtücher", "Kissen"] },
-          { name: "Kurzwaren, Handarbeit", synonyms: ["Wolle", "Stoffe", "Nähzubehör"] },
-          { name: "Musikinstrumente", synonyms: ["Noten", "Gitarre"] },
-          { name: "Babyartikel", synonyms: ["Kinderwagen", "Babyausstattung"] },
-          { name: "Parfümerie", synonyms: ["Parfum", "Duft"] },
-          { name: "Sanitätswaren", synonyms: ["Sanitätshaus", "Orthopädie"] },
-          { name: "Geschenkartikel", synonyms: ["Deko", "Souvenirs"] },
-          { name: "Kunst, Bilderrahmen", synonyms: ["Galerie", "Bilder"] }
+          { name: "Bekleidung", retailGroup: "Bekleidung, Schuhe", synonyms: ["Mode", "Kleidung", "Textilien"] },
+          { name: "Schuhe", retailGroup: "Bekleidung, Schuhe", synonyms: ["Sneaker", "Stiefel"] },
+          { name: "Lederwaren, Taschen", retailGroup: "Bekleidung, Schuhe", synonyms: ["Koffer", "Handtaschen"] },
+          { name: "Bücher", retailGroup: "Elektrowaren, Medien", synonyms: ["Buchhandlung"] },
+          { name: "Schreibwaren, Bürobedarf", retailGroup: "Sonstige Sortimente", synonyms: ["Papier", "Büroartikel", "Schulbedarf"] },
+          { name: "Spielwaren", retailGroup: "Sonstige Sortimente", synonyms: ["Spielzeug", "Spiele"] },
+          { name: "Sportartikel", retailGroup: "Sonstige Sortimente", synonyms: ["Sportbekleidung", "Sportschuhe"] },
+          { name: "Unterhaltungselektronik", retailGroup: "Elektrowaren, Medien", synonyms: ["TV", "Fernseher", "Hi-Fi", "Spielkonsole"] },
+          { name: "Telekommunikation", retailGroup: "Elektrowaren, Medien", synonyms: ["Handy", "Smartphone", "Mobilfunk"] },
+          { name: "Computer und Zubehör", retailGroup: "Elektrowaren, Medien", synonyms: ["Laptop", "PC", "Tablet", "Drucker"] },
+          { name: "Foto", retailGroup: "Elektrowaren, Medien", synonyms: ["Kamera", "Fotozubehör"] },
+          { name: "Optik, Hörgeräte", retailGroup: "Gesundheit, Körperpflege", synonyms: ["Brillen", "Kontaktlinsen", "Akustiker"] },
+          { name: "Uhren, Schmuck", retailGroup: "Sonstige Sortimente", synonyms: ["Juwelier", "Goldschmied"] },
+          { name: "Haushaltswaren", retailGroup: "Haus, Einrichtung, Möbel", synonyms: ["Küchenzubehör", "Kochgeschirr", "Besteck"] },
+          { name: "Glas, Porzellan, Keramik", retailGroup: "Haus, Einrichtung, Möbel", synonyms: ["Geschirr", "Vasen"] },
+          { name: "Heimtextilien", retailGroup: "Haus, Einrichtung, Möbel", synonyms: ["Gardinen", "Bettwäsche", "Handtücher", "Kissen"] },
+          { name: "Kurzwaren, Handarbeit", retailGroup: "Sonstige Sortimente", synonyms: ["Wolle", "Stoffe", "Nähzubehör"] },
+          { name: "Musikinstrumente", retailGroup: "Sonstige Sortimente", synonyms: ["Noten", "Gitarre"] },
+          { name: "Babyartikel", retailGroup: "Sonstige Sortimente", synonyms: ["Kinderwagen", "Babyausstattung"] },
+          { name: "Parfümerie", retailGroup: "Gesundheit, Körperpflege", synonyms: ["Parfum", "Duft"] },
+          { name: "Sanitätswaren", retailGroup: "Gesundheit, Körperpflege", synonyms: ["Sanitätshaus", "Orthopädie"] },
+          { name: "Geschenkartikel", retailGroup: "Sonstige Sortimente", synonyms: ["Deko", "Souvenirs"] },
+          { name: "Kunst, Bilderrahmen", retailGroup: "Haus, Einrichtung, Möbel", synonyms: ["Galerie", "Bilder"] }
         ]
       },
       {
@@ -443,19 +444,19 @@ export const wiesbadenConfig: MunicipalityConfig = {
         label: "Nicht zentrenrelevant",
         description: "Sortimente, die typischerweise großflächig und autoorientiert angeboten werden.",
         items: [
-          { name: "Möbel", synonyms: ["Sofa", "Küchenmöbel", "Schrank", "Büromöbel"] },
-          { name: "Matratzen, Bettwaren", synonyms: ["Bett", "Lattenrost", "Bettdecke"] },
-          { name: "Baumarktartikel", synonyms: ["Werkzeug", "Heimwerker", "Farben", "Tapeten"] },
-          { name: "Gartenbedarf, Pflanzen", synonyms: ["Gartencenter", "Gartenmöbel", "Erde"] },
-          { name: "Bodenbeläge, Teppiche", synonyms: ["Parkett", "Laminat"] },
-          { name: "Leuchten", synonyms: ["Lampen", "Beleuchtung"] },
-          { name: "Kfz-Zubehör", synonyms: ["Autozubehör", "Reifen"] },
-          { name: "Fahrräder", synonyms: ["Fahrrad", "E-Bike", "Pedelec"] },
-          { name: "Zoologischer Bedarf", synonyms: ["Tierfutter", "Heimtier", "Zoo"] },
-          { name: "Elektrogroßgeräte", synonyms: ["Waschmaschine", "Kühlschrank", "Weiße Ware", "Herd"] },
-          { name: "Campingartikel", synonyms: ["Zelt", "Wohnwagenzubehör"] },
-          { name: "Sanitär, Fliesen", synonyms: ["Badausstattung", "Badmöbel"] },
-          { name: "Baustoffe, Holz", synonyms: ["Holzhandel", "Zement"] }
+          { name: "Möbel", retailGroup: "Haus, Einrichtung, Möbel", synonyms: ["Sofa", "Küchenmöbel", "Schrank", "Büromöbel"] },
+          { name: "Matratzen, Bettwaren", retailGroup: "Haus, Einrichtung, Möbel", synonyms: ["Bett", "Lattenrost", "Bettdecke"] },
+          { name: "Baumarktartikel", retailGroup: "Bau, Garten, Heimtier", synonyms: ["Werkzeug", "Heimwerker", "Farben", "Tapeten"] },
+          { name: "Gartenbedarf, Pflanzen", retailGroup: "Bau, Garten, Heimtier", synonyms: ["Gartencenter", "Gartenmöbel", "Erde"] },
+          { name: "Bodenbeläge, Teppiche", retailGroup: "Haus, Einrichtung, Möbel", synonyms: ["Parkett", "Laminat"] },
+          { name: "Leuchten", retailGroup: "Haus, Einrichtung, Möbel", synonyms: ["Lampen", "Beleuchtung"] },
+          { name: "Kfz-Zubehör", retailGroup: "Sonstige Sortimente", synonyms: ["Autozubehör", "Reifen"] },
+          { name: "Fahrräder", retailGroup: "Sonstige Sortimente", synonyms: ["Fahrrad", "E-Bike", "Pedelec"] },
+          { name: "Zoologischer Bedarf", retailGroup: "Bau, Garten, Heimtier", synonyms: ["Tierfutter", "Heimtier", "Zoo"] },
+          { name: "Elektrogroßgeräte", retailGroup: "Elektrowaren, Medien", synonyms: ["Waschmaschine", "Kühlschrank", "Weiße Ware", "Herd"] },
+          { name: "Campingartikel", retailGroup: "Sonstige Sortimente", synonyms: ["Zelt", "Wohnwagenzubehör"] },
+          { name: "Sanitär, Fliesen", retailGroup: "Bau, Garten, Heimtier", synonyms: ["Badausstattung", "Badmöbel"] },
+          { name: "Baustoffe, Holz", retailGroup: "Bau, Garten, Heimtier", synonyms: ["Holzhandel", "Zement"] }
         ]
       }
     ],

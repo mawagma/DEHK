@@ -72,7 +72,11 @@ export type MarketTypeConfig = { id: string; label: string; color: string };
 export type SteeringPrinciple = { title: string; text: string; icon: IconName };
 export type SteeringStep = { question: string; title: string; text: string };
 export type SteeringExample = { id: string; title: string; where: string; what: string; size: string; assessment: string; /** Verlinkung auf ein Zentrenprofil */ centerId?: string };
-export type AssortmentItem = string | { name: string; synonyms?: string[]; note?: string };
+export type AssortmentItem = string | {
+  name: string; synonyms?: string[]; note?: string;
+  /** Warengruppe der Einzelhandelsstruktur (retail.assortments) für den Link „Wo gibt es das heute?“ */
+  retailGroup?: string;
+};
 export type AssortmentGroup = { id: string; label: string; description: string; items: AssortmentItem[] };
 export type SteeringGuideline = { id: string; title: string; text: string; appliesTo: string };
 /** Matrix Standort × Sortiment mit neutralen Textlabels (keine Ampel). cells[zeile][spalte] */

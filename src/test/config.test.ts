@@ -14,7 +14,8 @@ describe("Kommunale Konfiguration Wiesbaden", () => {
     const csa = config.centers.filter(c => central.has(c.categoryId));
     const existing = csa.filter(c => c.status === "bestehend").length;
     const planned = csa.filter(c => c.status === "perspektivisch").length;
-    expect(`${existing} + ${planned}`).toBe(config.overview.metrics.find(m => m.label === "Zentrale Versorgungsbereiche")?.value);
+    // Laut Gutachten: 9 bestehende + 1 perspektivischer zentraler Versorgungsbereich
+    expect([existing, planned]).toEqual([9, 1]);
     expect(config.centers.filter(c => !central.has(c.categoryId))).toHaveLength(3);
   });
 

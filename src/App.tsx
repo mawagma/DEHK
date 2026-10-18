@@ -4,6 +4,8 @@ import type { MunicipalityConfig } from "./config/types";
 import { AppFooter } from "./components/layout/AppFooter";
 import { AppHeader } from "./components/layout/AppHeader";
 import { ErrorBoundary } from "./components/layout/ErrorBoundary";
+import { aboutEnabled } from "./lib/about";
+import { AboutPage } from "./pages/AboutPage";
 import { CentersPage } from "./pages/CentersPage";
 import { OverviewPage } from "./pages/OverviewPage";
 import { RetailStructurePage } from "./pages/RetailStructurePage";
@@ -47,6 +49,7 @@ export default function App({ config }: { config: MunicipalityConfig }) {
           {m.nahversorgung ? <Route path="/nahversorgung" element={<SupplyPage config={config} />} /> : null}
           {m.einzelhandelsstruktur ? <Route path="/einzelhandelsstruktur" element={<RetailStructurePage config={config} />} /> : null}
           {m["einzelhandel-steuern"] ? <Route path="/einzelhandel-steuern" element={<SteeringPage config={config} />} /> : null}
+          {aboutEnabled(config) ? <Route path="/ueber-das-konzept" element={<AboutPage config={config} />} /> : null}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         </ErrorBoundary>
