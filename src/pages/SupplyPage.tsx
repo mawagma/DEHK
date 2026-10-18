@@ -31,8 +31,9 @@ export function SupplyPage({ config }: { config: MunicipalityConfig }) {
   const hex = demo?.hexes.find(h => h.id === selectedId);
 
   return (
-    <section className="page">
+    <>
       <PageIntro title="Nahversorgung" text={config.supply.intro} />
+      <section className="page">
 
       <div className="workspace">
         <div className="workspace-map">
@@ -97,5 +98,6 @@ export function SupplyPage({ config }: { config: MunicipalityConfig }) {
       <Hint title="Methodik">{config.supply.methodNote}</Hint>
       {config.isDemo ? <DemoNotice /> : null}
     </section>
+    </>
   );
 }

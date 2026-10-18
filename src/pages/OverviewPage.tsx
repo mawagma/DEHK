@@ -22,6 +22,12 @@ export function OverviewPage({ config }: { config: MunicipalityConfig }) {
   return (
     <>
       <section className="hero">
+        <div className="hero-panel">
+          <span className="eyebrow">{config.municipality} · {config.conceptStatus}</span>
+          <h1>{config.overview.headline}</h1>
+          <p>{config.overview.intro}</p>
+          <Link className="link-cta" to="/zentren">Zu den <strong>Zentren &amp; Standorten</strong></Link>
+        </div>
         <div className="hero-map">
           <MapPanel
             webMapId={config.arcgis.webMaps.overview}
@@ -47,12 +53,6 @@ export function OverviewPage({ config }: { config: MunicipalityConfig }) {
           />
         </div>
 
-        <div className="hero-panel">
-          <span className="eyebrow">{config.municipality} · {config.conceptStatus}</span>
-          <h1>{config.overview.headline}</h1>
-          <p>{config.overview.intro}</p>
-          <Link className="primary-button on-dark" to="/zentren">Zentren entdecken →</Link>
-        </div>
       </section>
 
       <section className="overview-body">

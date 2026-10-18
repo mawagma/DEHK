@@ -1,15 +1,16 @@
 import type { ReactNode } from "react";
 import { Icon } from "./Icon";
 
+/** Seitenkopf im GMA-Stil: blaue Fläche mit schräger Kante. */
 export function PageIntro({ title, text, children }: { title: string; text: string; children?: ReactNode }) {
   return (
-    <div className="page-intro">
-      <div>
+    <header className="page-hero">
+      <div className="page-hero-panel">
         <h1>{title}</h1>
         <p>{text}</p>
+        {children}
       </div>
-      {children}
-    </div>
+    </header>
   );
 }
 

@@ -32,8 +32,9 @@ export function CentersPage({ config }: { config: MunicipalityConfig }) {
   );
 
   return (
-    <section className="page">
+    <>
       <PageIntro title="Zentren & Standorte" text="Zentren im Stadtgebiet über Karte oder Liste erkunden und Profile mit weiteren Informationen aufrufen." />
+      <section className="page">
 
       <div className={profileOpen ? "workspace is-profile" : "workspace"}>
         <div className="workspace-map">
@@ -79,5 +80,6 @@ export function CentersPage({ config }: { config: MunicipalityConfig }) {
 
       {config.isDemo ? <DemoNotice /> : null}
     </section>
+    </>
   );
 }

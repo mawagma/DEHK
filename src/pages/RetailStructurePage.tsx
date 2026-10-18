@@ -31,8 +31,9 @@ export function RetailStructurePage({ config }: { config: MunicipalityConfig }) 
   const store = stores.find(s => s.id === selectedId);
 
   return (
-    <section className="page">
+    <>
       <PageIntro title="Einzelhandelsstruktur" text={config.retail.intro} />
+      <section className="page">
       <RetailFilterBar value={filter} onChange={setFilter} assortments={assortments} locationTypes={locationTypes} districts={districts} />
 
       <div className="workspace is-balanced">
@@ -102,5 +103,6 @@ export function RetailStructurePage({ config }: { config: MunicipalityConfig }) 
       <Hint title="Hinweis">{config.retail.note} Angezeigt werden nur Größenklassen, keine exakten Verkaufsflächen einzelner Betriebe.</Hint>
       {config.isDemo ? <DemoNotice /> : null}
     </section>
+    </>
   );
 }

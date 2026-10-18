@@ -18,8 +18,9 @@ export function SteeringPage({ config }: { config: MunicipalityConfig }) {
   const s = config.steering;
 
   return (
-    <section className="page">
+    <>
       <PageIntro title="Einzelhandel steuern" text={s.intro} />
+      <section className="page">
 
       <div className="steering-layout">
         <nav className="side-nav" aria-label="Kapitel">
@@ -96,5 +97,6 @@ export function SteeringPage({ config }: { config: MunicipalityConfig }) {
         </div>
       </div>
     </section>
+    </>
   );
 }

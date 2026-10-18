@@ -15,8 +15,8 @@ export const wiesbadenConfig: MunicipalityConfig = {
 
   contact: {
     email: "info@gma.biz",
-    imprintUrl: "https://www.gma.biz/impressum",
-    privacyUrl: "https://www.gma.biz/datenschutz"
+    imprintUrl: "https://gma.biz/impressum/",
+    privacyUrl: "https://gma.biz/datenschutz/"
   },
 
   arcgis: {
