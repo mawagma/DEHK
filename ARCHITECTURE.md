@@ -34,8 +34,20 @@ Neue Kommune:
 
 Komponenten bleiben gleich.
 
-## V1-Seiten
+## Seiten
 - `/` Überblick
 - `/zentren` Zentren & Standorte
+- `/nahversorgung` Nahversorgung
+- `/einzelhandelsstruktur` Einzelhandelsstruktur
+- `/einzelhandel-steuern` Einzelhandel steuern
 
-Weitere Module folgen auf demselben Grundgerüst.
+## Code-Struktur
+- `src/config/` – Typen (`types.ts`), aktive Kommune (`index.ts`), Kommunen-Dateien
+- `src/demo/` – schematische Beispielkarte und Beispieldaten (nur solange keine WebMap-ID gesetzt ist)
+- `src/components/maps/` – `MapPanel` wählt `ArcGISMap` (echte WebMap) oder `SchematicMap` (Beispiel)
+- `src/lib/retailFilter.ts` – ein Filterzustand → Karte, Kennzahl, Diagramme
+- `src/pages/` – je Modul eine Seite
+
+## Zustände
+- Zentrenauswahl: ein Zustand in der URL (`?zentrum=…&ansicht=profil`), von Karte und Liste gemeinsam genutzt.
+- Einzelhandelsstruktur: ein `RetailFilter`-Zustand; Klick auf einen Betrieb ändert die Filter nicht.
