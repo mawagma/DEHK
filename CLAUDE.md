@@ -45,6 +45,8 @@ Keep the existing GMA visual direction:
 - light background
 - calm, modern data-product appearance
 - no generic admin-dashboard redesign
+- styled after gma.biz: Nunito (self-hosted via @fontsource-variable/nunito, approved), GMA blue `#0068a5`, slate `#39444c`, orange `#f19433` for accent lines only, slanted blue panels, uppercase titles
+- image rights for all images on gma.biz are cleared and may be used (not used yet)
 
 Centers page:
 - overview: ~70% map / 30% list
