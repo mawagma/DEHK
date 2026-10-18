@@ -16,7 +16,10 @@ export default function App({ config }: { config: MunicipalityConfig }) {
 
   return (
     <div className="app-shell">
-      <a className="skip-link" href="#inhalt">Zum Inhalt springen</a>
+      {/* Klick abfangen: "#inhalt" würde bei #-Adressen sonst als Seitenwechsel gelesen. */}
+      <a className="skip-link" href="#inhalt" onClick={e => { e.preventDefault(); document.getElementById("inhalt")?.focus(); }}>
+        Zum Inhalt springen
+      </a>
       <AppHeader config={config} />
       <main id="inhalt" tabIndex={-1}>
         <Routes>
