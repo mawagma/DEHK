@@ -1,4 +1,5 @@
 import { useId, useState } from "react";
+import { itemName } from "../../lib/assortments";
 import type { AssortmentGroup, SteeringExample, SteeringStep } from "../../config/types";
 
 /** Leitstruktur WO? → WAS? → WIE GROSS? → GRUNDSÄTZE. */
@@ -51,7 +52,7 @@ export function ExampleSwitcher({ examples }: { examples: SteeringExample[] }) {
 export function AssortmentSearch({ groups }: { groups: AssortmentGroup[] }) {
   const [query, setQuery] = useState("");
   const q = query.trim().toLowerCase();
-  const filtered = groups.map(g => ({ ...g, items: g.items.filter(i => i.toLowerCase().includes(q)) }));
+  const filtered = groups.map(g => ({ ...g, items: g.items.filter(i => itemName(i).toLowerCase().includes(q)) }));
   const hits = filtered.reduce((n, g) => n + g.items.length, 0);
   return (
     <div className="assortment-search">
@@ -66,7 +67,7 @@ export function AssortmentSearch({ groups }: { groups: AssortmentGroup[] }) {
             <h3>{g.label}</h3>
             <p className="muted small">{g.description}</p>
             {g.items.length ? (
-              <ul>{g.items.map(i => <li key={i}>{i}</li>)}</ul>
+              <ul>{g.items.map(i => <li key={itemName(i)}>{itemName(i)}</li>)}</ul>
             ) : (
               <p className="muted small">Kein Treffer in dieser Gruppe.</p>
             )}

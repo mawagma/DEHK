@@ -37,7 +37,7 @@ describe("Zentren & Standorte", () => {
   });
 
   it("zeigt einen Hinweis, wenn keine Profilkennzahlen vorliegen", () => {
-    renderPage("/zentren?zentrum=dotzheim&ansicht=profil");
+    renderPage("/zentren?zentrum=schelmengraben&ansicht=profil");
     expect(screen.getByText(/noch keine freigegebenen Profilkennzahlen/)).toBeTruthy();
   });
 });

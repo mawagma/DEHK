@@ -1,6 +1,6 @@
 // Explizite, kommunenunabhängige Konfigurationstypen. Jede Kommune ist eine Instanz von MunicipalityConfig.
 
-export type ModuleId = "zentren" | "nahversorgung" | "einzelhandelsstruktur" | "einzelhandel-steuern";
+export type ModuleId = "zentren" | "nahversorgung" | "einzelhandelsstruktur" | "einzelhandel-steuern" | "ueber-das-konzept";
 
 export type SymbolShape = "square" | "triangle" | "circle" | "diamond";
 
@@ -44,6 +44,26 @@ export type CenterConfig = {
   salesAreaM2?: number;
   structure?: ShareRow[];
   structureCaption?: string;
+  /** Lage, Ausdehnung, Erreichbarkeit */
+  location?: string;
+  /** Einzugsbereich / Versorgungsfunktion */
+  supplyFunction?: string;
+  /** Vorbereiteter Anteil an allen Betrieben der Stadt (%) */
+  shareOfCityStoresPct?: number;
+  /** Leerstehende Ladenlokale */
+  vacancies?: number;
+  /** Magnetbetriebe als Betriebstyp, ohne Flächen */
+  anchors?: string[];
+  strengths?: string[];
+  weaknesses?: string[];
+  /** Entwicklungsziel, neutral (z. B. "Sichern", "Stärken") – keine Ampel */
+  goal?: { label: string; text: string };
+  recommendations?: string[];
+  /** Betriebe je Erhebungsjahr, nur bei vergleichbarer Abgrenzung */
+  development?: ShareRow[];
+  image?: HeroImage;
+  /** Nur perspektivische Zentren: Voraussetzungen, Zeithorizont */
+  prospectNote?: string;
 };
 
 export type SupplyClassConfig = { id: string; label: string; color: string };
@@ -51,8 +71,12 @@ export type MarketTypeConfig = { id: string; label: string; color: string };
 
 export type SteeringPrinciple = { title: string; text: string; icon: IconName };
 export type SteeringStep = { question: string; title: string; text: string };
-export type SteeringExample = { id: string; title: string; where: string; what: string; size: string; assessment: string };
-export type AssortmentGroup = { id: string; label: string; description: string; items: string[] };
+export type SteeringExample = { id: string; title: string; where: string; what: string; size: string; assessment: string; /** Verlinkung auf ein Zentrenprofil */ centerId?: string };
+export type AssortmentItem = string | { name: string; synonyms?: string[]; note?: string };
+export type AssortmentGroup = { id: string; label: string; description: string; items: AssortmentItem[] };
+export type SteeringGuideline = { id: string; title: string; text: string; appliesTo: string };
+/** Matrix Standort × Sortiment mit neutralen Textlabels (keine Ampel). cells[zeile][spalte] */
+export type SteeringMatrix = { rows: string[]; cols: string[]; cells: string[][] };
 export type Faq = { question: string; answer: string };
 
 export type IconName = "pin" | "cart" | "chart" | "document" | "building" | "leaf" | "info" | "mail";
@@ -78,14 +102,40 @@ export type MunicipalityConfig = {
   heroImage?: HeroImage;
   /** Bild je Themenseite (Seitenkopf und Kachel auf der Startseite). */
   pageImages?: Partial<Record<ModuleId, HeroImage>>;
-  modules: Record<ModuleId, boolean>;
-  contact: { email: string; imprintUrl: string; privacyUrl: string; conceptUrl?: string };
+  /** "ueber-das-konzept" ist optional; fehlt der Schalter, ist die Seite aktiv, sobald `about` gepflegt ist. */
+  modules: Record<Exclude<ModuleId, "ueber-das-konzept">, boolean> & { "ueber-das-konzept"?: boolean };
+  /** Beschlussstand, z. B. "[Platzhalter] Entwurf, Beschluss geplant für …" */
+  decisionStatus?: string;
+  contact: {
+    email: string; imprintUrl: string; privacyUrl: string; conceptUrl?: string;
+    person?: { name: string; role: string; email?: string; phone?: string };
+  };
+  about?: {
+    intro: string;
+    process: string[];
+    method: { title: string; text: string }[];
+    dataSources: { label: string; status: string }[];
+    downloads: { label: string; url: string }[];
+  };
+  glossary?: { term: string; definition: string }[];
   arcgis: ArcGISConfig;
-  overview: { headline: string; intro: string; metrics: Metric[] };
+  overview: { headline: string; intro: string; metrics: Metric[]; keyMessages?: string[]; whatsNew?: string[] };
   centerCategories: CenterCategoryConfig[];
   centers: CenterConfig[];
-  supply: { intro: string; classes: SupplyClassConfig[]; marketTypes: MarketTypeConfig[]; methodNote: string };
-  retail: { intro: string; assortments: string[]; locationTypes: string[]; districts: string[]; note: string };
+  supply: {
+    intro: string; classes: SupplyClassConfig[]; marketTypes: MarketTypeConfig[]; methodNote: string;
+    keyMessages?: string[];
+    gaps?: { area: string; text: string }[];
+    /** Lebensmittelhandwerk, Wochenmärkte … */
+    complementary?: string;
+  };
+  retail: {
+    intro: string; assortments: string[]; locationTypes: string[]; districts: string[]; note: string;
+    /** Warengruppe -> Bedarfsstufe (kurz-/mittel-/langfristig) */
+    needLevelByAssortment?: Record<string, string>;
+    keyMessages?: string[];
+    storeDefinition?: string;
+  };
   steering: {
     intro: string;
     principles: SteeringPrinciple[];
@@ -93,5 +143,9 @@ export type MunicipalityConfig = {
     examples: SteeringExample[];
     assortmentGroups: AssortmentGroup[];
     faqs: Faq[];
+    /** Ansiedlungsleitsätze */
+    guidelines?: SteeringGuideline[];
+    matrix?: SteeringMatrix;
+    procedure?: { title: string; text: string }[];
   };
 };

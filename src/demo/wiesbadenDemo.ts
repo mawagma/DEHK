@@ -96,7 +96,8 @@ export function buildWiesbadenDemo(config: MunicipalityConfig): DemoData {
     const pos = centerPos[c.id];
     if (!pos || c.status === "perspektivisch") continue;
     const type = categoryLabel(c.categoryId);
-    for (let i = 0; i < (storeCounts[c.categoryId] ?? 0); i++) addStore(gauss(pos.at, pos.r * 0.45), type);
+    // Profilzahl aus der Konfiguration, sonst Standardwert je Kategorie
+    for (let i = 0; i < (c.stores ?? storeCounts[c.categoryId] ?? 0); i++) addStore(gauss(pos.at, pos.r * 0.45), type);
   }
   while (stores.length < TOTAL_STORES) addStore(randomInside(), "Sonstige Lage");
 
